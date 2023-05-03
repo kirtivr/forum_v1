@@ -8,14 +8,17 @@ def index(request):
     num_instances = BookInstance.objects.all().count()
 
     num_instances_available = BookInstance.objects.filter(status__exact='a').count()
-
+    fiction_genres = Genre.objects.all().filter(name__contains='fiction').exclude(name__contains='non').count()
+    summer_theme_titles = Book.objects.all().filter(title__icontains='Summer').count()
     num_authors = Author.objects.count()
 
     context = {
         'num_books': num_books,
         'num_instances': num_instances,
         'num_instances_available': num_instances_available,
-        'num_authors': num_authors
+        'num_authors': num_authors,
+        'fiction_genres': fiction_genres,
+        'summer_theme_titles': summer_theme_titles,
     }
 
     return render(request, 'index.html', context=context)
