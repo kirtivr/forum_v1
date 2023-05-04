@@ -9,8 +9,9 @@ from django.views import generic
 class BookListView(generic.ListView):
     # These are all keywords, similar to "context" in index below.
     model = Book
+    paginate_by = 1
     context_object_name = 'book_list'   # your own name for the list as a template variable
-    queryset = Book.objects.all() # Get 5 books containing the title war
+    queryset = Book.objects.all()
 
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         # Call the base implementation first to get the context.
@@ -20,6 +21,22 @@ class BookListView(generic.ListView):
 
 class BookDetailView(generic.DetailView):
     model = Book
+
+class AuthorListView(generic.ListView):
+    # These are all keywords, similar to "context" in index below.
+    model = Author
+    paginate_by = 1
+    context_object_name = 'author_list'   # your own name for the list as a template variable
+    queryset = Author.objects.all()
+
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+        # Call the base implementation first to get the context.
+        context = super(AuthorListView, self).get_context_data(**kwargs)
+        context['some_data'] = 'This is just some data'
+        return context
+
+class AuthorDetailView(generic.DetailView):
+    model = Author
     
 def index(request):
     num_books = Book.objects.all().count()

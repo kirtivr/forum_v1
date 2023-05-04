@@ -16,7 +16,7 @@ class AuthorAdmin(admin.ModelAdmin):
     list_display = ('last_name', 'first_name', 'date_of_birth', 'date_of_death')
 
     # will display horizontally if you further group them in a tuple (as shown in the "date" fields below)
-    fields = ['first_name', 'last_name', 'books_authored', ('date_of_birth', 'date_of_death')]
+    fields = ['first_name', 'last_name', ('date_of_birth', 'date_of_death')]
 
     inlines = [BooksInline]
 

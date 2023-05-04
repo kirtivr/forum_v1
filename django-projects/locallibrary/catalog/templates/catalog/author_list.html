@@ -1,22 +1,22 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-  <h1>Book List</h1>
-  {% if book_list %}
+  <h1>Author List</h1>
+  {% if author_list %}
   <ul>
-    {% for book in book_list %}
+    {% for author in author_list %}
       <li>
         <!--
         We have to be a little careful of "side effects" when calling functions in templates.
         Here we just get a URL to display, but a function can do pretty much anything — we wouldn't
         want to delete our database (for example) just by rendering our template!
         -->
-        <a href="{{ book.get_absolute_url }}">{{ book.title }}</a>
+        <a href="{{ author.get_absolute_url }}">{{ author.first_name }} {{ author.last_name }}</a>
       </li>
       <!-- you can test the forloop.last variable to perform conditional processing the last time that the loop is run.-->
     {% endfor %}
   </ul>
   {% else %}
-    <p>There are no books in the library.</p>
+    <p>No authors have graced this library.</p>
   {% endif %}
 {% endblock %}
