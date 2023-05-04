@@ -35,7 +35,10 @@ from django.contrib.auth.models import User
 #router.register(r'users', UserViewSet)
 
 from django.views.generic import RedirectView
-
+#
+#For example, given the path shown below, for a request to /myurl/halibut/ Django will call views.my_view(request, fish=halibut, my_template_name='some_path').
+#
+# path('myurl/<int:fish>', views.my_view, {'my_template_name': 'some_path'}, name='aurl'),
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('catalog/', include('catalog.urls')),
