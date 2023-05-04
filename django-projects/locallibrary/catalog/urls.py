@@ -9,4 +9,7 @@ urlpatterns = [
     # It is more robust than <a href="/catalog/">Home</a>
     # because we could change the pattern for our webpage (this is external facing).
     path('', views.index, name='index'),
+    path('books/', views.BookListView.as_view(), name='books'),
+    # Note int is optional, and 'pk' is whatever is passed to book/* forwarded to the detail view.
+    path('book/<int:pk>', views.BookDetailView.as_view(), name='book-detail'),
 ]

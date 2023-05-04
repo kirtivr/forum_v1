@@ -17,7 +17,7 @@
         <ul class="sidebar-nav">
          <!-- This tag accepts the name of a path() function called in your urls.py and the values for any arguments that the associated view will receive from that function, and returns a URL that you can use to link to the resource. !-->
           <li><a href="{% url 'index' %}">Home</a></li>
-          <li><a href="">All books</a></li>
+          <li><a href="{% url 'books' %}">All books</a></li>
           <li><a href="">All authors</a></li>
         </ul>
      {% endblock %}

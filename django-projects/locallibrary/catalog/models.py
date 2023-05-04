@@ -43,7 +43,6 @@ class Author(models.Model):
     last_name = models.CharField(max_length=100)
     date_of_birth = models.DateField(null=True, blank=True)
     date_of_death = models.DateField('Died', null=True, blank=True)
-    books_authored = models.ForeignKey('Book', on_delete=models.RESTRICT, null=True, related_name='+')
 
     class Meta:
         ordering = ['last_name', 'first_name']
