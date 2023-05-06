@@ -38,6 +38,11 @@
       </p>
       {% if copy.status != 'a' %}
         <p><strong>Due to be returned:</strong> {{ copy.due_back }}</p>
+        {% if perms.catalog.can_mark_returned %}
+          <!-- We can mark a BookInstance as returned. -->
+          <a href="{% url 'book-return' %}?id={{copy.id}}">Mark as returned</a>
+        {% endif %}
+  
       {% endif %}
       <p><strong>Imprint:</strong> {{ copy.imprint }}</p>
       <p class="text-muted"><strong>Id:</strong> {{ copy.id }}</p>

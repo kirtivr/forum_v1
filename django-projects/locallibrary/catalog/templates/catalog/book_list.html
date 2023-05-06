@@ -11,7 +11,7 @@
         Here we just get a URL to display, but a function can do pretty much anything — we wouldn't
         want to delete our database (for example) just by rendering our template!
         -->
-        <a href="{{ book.get_absolute_url }}">{{ book.title }}</a>
+        <a href="{{ book.get_absolute_url }}">{{ book.title }}</a>    
       </li>
       <!-- you can test the forloop.last variable to perform conditional processing the last time that the loop is run.-->
     {% endfor %}

@@ -36,7 +36,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
-    'rest_framework',
+    #'rest_framework',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -56,10 +56,11 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'locallibrary.urls'
 
+import os
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'catalog', 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -137,3 +138,31 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_REDIRECT_URL = '/'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters':{
+        'hc' : {
+            'format': '%(asctime)s %(levelname)s %(name)s\n%(message)s'
+        },
+
+    },
+    'handlers': {
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': 'general.log',
+            'level': 'DEBUG',
+            'encoding' : 'utf-8',
+        },
+    },
+    'loggers': {
+        'catalog': {
+            'handlers': ['file']
+        }
+    }
+}
