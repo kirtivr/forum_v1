@@ -22,6 +22,7 @@
           {% if user.is_authenticated %}
             <li>User: {{ user.get_username }}</li>
             <li><a href="{% url 'my-books' %}">My Borrowed</a></li>
+            {% if perms.catalog.can_mark_returned %}<li><a href="{% url 'all-borrowed' %}""> All Borrowed</a></li>{% endif %}
             <!--
               Note also how we have appended ?next={{ request.path }} to the end of the URLs. What this does is add a URL parameter next containing the address (URL) of the current page, to the end of the linked URL. After the user has successfully logged in/out, the views will use this "next" value to redirect the user back to the page where they first clicked the login/logout link.
             -->
