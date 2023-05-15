@@ -114,6 +114,9 @@ def logout_view(request):
     logout(request)
     return render(request,template_name='registration/logged_out.html')
 
+def post_list_view(request):
+    return render(request, template_name='posts/post_list_item.html')
+
 import datetime
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
