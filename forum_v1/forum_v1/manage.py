@@ -17,6 +17,16 @@ def main():
         ) from exc
     execute_from_command_line(sys.argv)
 
+# Commands
+# Run the thing
+# python3 manage.py runserver
+
+# Migrate databases
+# python3 manage.py makemigrations
+# python3 manage.py migrate
+
+# Static files update (?)
+# python manage.py collectstatic
 
 if __name__ == '__main__':
     main()
