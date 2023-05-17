@@ -57,7 +57,7 @@ import os
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'posts', 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'posts', 'templates'), os.path.join(BASE_DIR, 'posts', 'static')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

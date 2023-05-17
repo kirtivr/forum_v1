@@ -84,6 +84,9 @@ def mark_book_returned(request):
     book_inst.save()
     return redirect('/posts/book/'+str(book.id))
 
+from django.template import Context, Template
+from django.template.loader import render_to_string
+
 def index(request):
     num_books = Book.objects.all().count()
     num_instances = BookInstance.objects.all().count()
@@ -106,6 +109,7 @@ def index(request):
         'fiction_genres': fiction_genres,
         'summer_theme_titles': summer_theme_titles,
         'session': session,
+        'header': render_to_string('headers/header.html')
     }
 
     return render(request, 'index.html', context=context)
