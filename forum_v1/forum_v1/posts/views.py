@@ -109,7 +109,8 @@ def index(request):
         'fiction_genres': fiction_genres,
         'summer_theme_titles': summer_theme_titles,
         'session': session,
-        'header': render_to_string('headers/header.html')
+        'header': render_to_string('headers/header.html'),
+        'sidebar': render_to_string('sidebars/index.html')
     }
 
     return render(request, 'index.html', context=context)
