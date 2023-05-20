@@ -10,6 +10,7 @@ logger = logging.getLogger(__name__)
 #from .models import Book, Author, BookInstance, Genre
 
 from django.views import generic
+from .models import Post
 from django.template import Context, Template
 from django.template.loader import render_to_string
 
@@ -36,7 +37,9 @@ def index(request):
         'summer_theme_titles': summer_theme_titles,
         'session': session,
         'header': render_to_string('headers/header.html'),
-        'sidebar': render_to_string('sidebars/index.html')
+        'sidebar': render_to_string('sidebars/index.html'),
+        'posts': render_to_string('posts/post_list_item.html',
+                                  context = {'posts': Post.objects.all()})
     }
 
     return render(request, 'index.html', context=context)

@@ -1,5 +1,3 @@
-# Create your models here.
-
 from datetime import date
 from django.contrib.auth.models import User
 from django.contrib.postgres.fields import ArrayField
@@ -53,7 +51,7 @@ class Post(models.Model):
     date_posted = models.DateTimeField(null=True, blank=True, auto_now=True)
     contents = models.CharField(null=True, blank=True)
     commends = models.IntegerField(null=True, blank=True, default=0)
-    replies = models.IntegerField(null=True, blank=True)
+    replies = models.IntegerField(null=True, blank=True, default=0)
 
     def get_absolute_url(self):
         """Returns the URL to access a particular post."""
