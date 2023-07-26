@@ -83,6 +83,7 @@ DATABASES = {
             "service": "forum_v1",
             "passfile": "/home/horizon/fv1_pg",
         },
+        "NAME": "forum_v1",
     }
 }
 

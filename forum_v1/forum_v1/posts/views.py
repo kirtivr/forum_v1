@@ -17,7 +17,6 @@ from django.template.loader import render_to_string
 def index(request):
     num_books = 10
     num_instances = 30 #BookInstance.objects.all().count()
-
     num_instances_available = 364 #BookInstance.objects.filter(status__exact='a').count()
     fiction_genres = 735 #Genre.objects.all().filter(name__contains='fiction').exclude(name__contains='non').count()
     summer_theme_titles = 54128 #Book.objects.all().filter(title__icontains='Summer').count()
@@ -43,6 +42,9 @@ def index(request):
     }
 
     return render(request, 'index.html', context=context)
+
+def new_post_view(request):
+    return render(request, template_name="posts/new_post.html")
 
 def logout_view(request):
     logout(request)

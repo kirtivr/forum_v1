@@ -49,7 +49,7 @@ class Post(models.Model):
     # Otherwise this would have been a ManyToMany field.
     author = models.ForeignKey('Author', on_delete=models.SET_NULL, null=True)
     date_posted = models.DateTimeField(null=True, blank=True, auto_now=True)
-    contents = models.CharField(null=True, blank=True)
+    contents = models.CharField(max_length=100, null=True, blank=True)
     commends = models.IntegerField(null=True, blank=True, default=0)
     replies = models.IntegerField(null=True, blank=True, default=0)
 
