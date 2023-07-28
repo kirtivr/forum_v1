@@ -4,17 +4,72 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>EasyMDE demo</title>
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css"
-    />
-    <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js">
-    </script>
+    <title>Markdown Editor Control</title>
+    {% load static %}
+    <!-- <script src="{% static 'jquery-3.7.0.min.js' %}"></script> -->
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <!-- <script src="{% static 'assets/dist/js/bootstrap.bundle.min.js' %}"></script> -->
+    <!--<link rel="stylesheet" href="{% static 'assets/dist/css/bootstrap.min.css' %}"/>-->
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'assets/dist/css/bootstrap-markdown.min.css' %}"/>
+    <script src="{% static 'assets/dist/js/to-markdown.js' %}"></script>
+    <script src="{% static 'assets/dist/js/markdown.js' %}"></script>
+    <script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="{% static 'assets/dist/js/bootstrap-markdown.js' %}"></script>
   </head>
 
   <body>
-    <textarea></textarea>
-    <script> const easy = new EasyMDE({sideBySideFullscreen: false}); </script>
+    <div class="container">
+      <h1>jQuery Bootstrap Markdown Basic Demo</h1>
+      <!-- An empty action sends the form data to the same view.-->
+      <form action="" method="post">
+        {% csrf_token %}
+          <div class="form-group">
+              <input class="form-control" name="title" type="text" placeholder="Title?"/>
+            </div>
+            <textarea id="target-editor" name="content" data-provide="markdown" rows="12">
+              ### jQuery Bootstrap Markdown
+              Enjoy!</textarea>      
+          <hr/>
+          <button type="submit" class="btn" >Submit</button>
+        </form> 
+      </div>
+      <script>
+        $("#target-editor").markdown({
+          // auto focus after instantiated
+          autofocus: false,
+
+          // is hideable
+          hideable: false,
+
+          // is savable
+          savable: false,
+
+          // width/height
+          width: 'inherit',
+          height: 'inherit',
+
+          // none,both,horizontal,vertical
+          resize: 'none',
+
+          // custom icon
+          iconlibrary: 'glyph',
+
+          // default language
+          language: 'en',
+
+          // Contains enable (bool) and icons (object) keys
+          fullscreen: {},
+
+          // Enables integration with DropZone for allowing file upload/linking via drag&drop
+          dropZoneOptions: null,
+
+          // Array or string of button names to be hidden. 
+          hiddenButtons: [],
+
+          // Array or string of button names to be disabled. Default is empty string
+          disabledButtons: []
+        });
+      </script>
   </body>
 </html>
