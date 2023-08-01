@@ -36,7 +36,7 @@ def index(request):
         'summer_theme_titles': summer_theme_titles,
         'session': session,
         'header': render_to_string('headers/header.html'),
-        'sidebar': render_to_string('sidebars/index.html'),
+        'sidebar': render_to_string('sidebars/new_sidebar.html'),
         'posts': render_to_string('posts/post_list_item.html',
                                   context = {'posts': Post.objects.all()})
     }
