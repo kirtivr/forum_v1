@@ -30,6 +30,11 @@
             <button class="col themed-grid-col" id="filter_best">Best</button>
             <button class="col themed-grid-col" id="filter_unanswered">Unanswered</button>
           </div>
+          {% if user.is_authenticated %}
+            <p> Welcome {{ user.get_username }} </p>
+          {% else %}
+            <p>Please login to see this page.</p>
+          {% endif %}
           {% block content %}
           {% endblock %}
           {{ posts }}

@@ -128,8 +128,14 @@
         </form>
         
         <div class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
-          <button type="button" class="btn btn-outline-light me-2">Login</button>
-          <button type="button" class="btn btn-warning">Sign-up</button>
+          {% if user.is_authenticated %}
+            <p> Welcome {{ user.get_username }} .</p>
+            <button type="button" class="btn btn-outline-light me-2">Logout</button>
+          {% else %}
+            Not sure why user {{ user.get_username }} {{ request }} is not authenticated.
+            <button type="button" class="btn btn-outline-light me-2">Login</button>
+            <button type="button" class="btn btn-warning">Sign-up</button>    
+          {% endif %}
         </div>
 
         <div class="text-end">

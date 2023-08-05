@@ -55,9 +55,9 @@ def filter_posts(request, filter_by):
 
     context = {
         'session': session,
-        'header': render_to_string('headers/header.html'),
-        'sidebar': render_to_string('sidebars/new_sidebar.html'),
-        'posts': render_to_string('posts/post_list_item.html', context = {'posts': all_posts})}
+        'header': render_to_string('headers/header.html', {}, request=request),
+        'sidebar': render_to_string('sidebars/new_sidebar.html', {},  request=request),
+        'posts': render_to_string('posts/post_list_item.html', context = {'posts': all_posts}, request=request)}
     
     return render(request, 'index.html', context=context)
 

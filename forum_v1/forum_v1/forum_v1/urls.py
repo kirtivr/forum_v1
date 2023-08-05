@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.views.generic import RedirectView
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('accounts/', include('django.contrib.auth.urls')),
     path('posts/', include('posts.urls')),
 ]
 

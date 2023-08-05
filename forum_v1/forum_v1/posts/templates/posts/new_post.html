@@ -9,7 +9,7 @@
     <!-- <script src="{% static 'jquery-3.7.0.min.js' %}"></script> -->
     <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
     <!-- <script src="{% static 'assets/dist/js/bootstrap.bundle.min.js' %}"></script> -->
-    <!--<link rel="stylesheet" href="{% static 'assets/dist/css/bootstrap.min.css' %}"/>-->
+    <!--<link rel="stylesheet" href="{% static 'assets/dist/css/bootstrap.min.css' %}"/> -->
     <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="{% static 'assets/dist/css/bootstrap-markdown.min.css' %}"/>
     <script src="{% static 'assets/dist/js/to-markdown.js' %}"></script>
@@ -29,9 +29,15 @@
             </div>
             <textarea id="target-editor" name="content" data-provide="markdown" rows="12">
               ### jQuery Bootstrap Markdown
-              Enjoy!</textarea>      
+              Enjoy!</textarea>
+            <select style="margin-top: 4rem;" multiple="multiple">
+                <option value="m">Maintenance</option>
+                <option value="t">Tankers</option>
+                <option value="s">Suez Max</option>
+                <option value="e">Engine Room</option>
+            </select>
           <hr/>
-          <button type="submit" class="btn" >Submit</button>
+          <button type="submit" class="btn">Submit</button>
         </form> 
       </div>
       <script>
