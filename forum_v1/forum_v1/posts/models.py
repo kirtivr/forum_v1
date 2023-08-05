@@ -31,6 +31,13 @@ class Author(models.Model):
         """String for representing the Model object."""
         return f'{self.last_name}, {self.first_name}'
 
+class AbstractReply(models.Model):
+    author = models.ForeignKey('Author', on_delete=models.SET_NULL, null=True, related_name="author")
+    original_post = models.ForeignKey('Post', on_delete=models.CASCADE, related_name="post")
+
+    class Meta:
+        abstract = True
+
 class Post(models.Model):
     """Model representing a post on the forum. This post could be an original post or a reply."""
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text='Unique ID for this post')
@@ -47,11 +54,31 @@ class Post(models.Model):
 
     # Foreign Key used because post can only have one author, but authors can have multiple posts.
     # Otherwise this would have been a ManyToMany field.
-    author = models.ForeignKey('Author', on_delete=models.SET_NULL, null=True)
+    author = models.ForeignKey('Author', on_delete=models.SET_NULL, null=True, related_name="author")
     date_posted = models.DateTimeField(null=True, blank=True, auto_now=True)
-    contents = models.CharField(max_length=100, null=True, blank=True)
+    # Includes date_posted.
+    latest_reply = models.DateTimeField(null=True, blank=True, auto_now=True)
+    contents = models.CharField(max_length=10000, null=True, blank=True)
     commends = models.IntegerField(null=True, blank=True, default=0)
-    replies = models.IntegerField(null=True, blank=True, default=0)
+    num_replies = models.IntegerField(null=True, blank=True, default=0)
+
+    def get_absolute_url(self):
+        """Returns the URL to access a particular post."""
+        return reverse('post-detail', args=[str(self.id)])    
+
+    class Meta:
+        ordering = ['date_posted']
+
+    def __str__(self):
+        """String for representing the Model object."""
+        return f'{self.id} ({self.title} by {self.author})'
+
+class Reply(AbstractReply):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text='Unique ID for this post')
+
+    date_posted = models.DateTimeField(null=True, blank=True, auto_now=True)
+    contents = models.CharField(max_length=10000, null=True, blank=True)
+    commends = models.IntegerField(null=True, blank=True, default=0)
 
     def get_absolute_url(self):
         """Returns the URL to access a particular post."""

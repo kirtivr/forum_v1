@@ -25,10 +25,10 @@
         <link href="{% static 'assets/grid.css' %}" rel="stylesheet">
         <div class="container-fluid">
           <div class="row row-cols-md-4 mb-4 text-center">
-            <button class="col themed-grid-col" onclick="window.alert('clicked')">Latest Activity</button>
-            <button class="col themed-grid-col" onclick="window.alert('clicked')">New Posts</button>
-            <button class="col themed-grid-col" onclick="window.alert('clicked')">Best</button>
-            <button class="col themed-grid-col" onclick="window.alert('clicked')">Unanswered</button>
+            <button class="col themed-grid-col" id="filter_latest">Latest Activity</button>
+            <button class="col themed-grid-col" id="filter_new">New Posts</button>
+            <button class="col themed-grid-col" id="filter_best">Best</button>
+            <button class="col themed-grid-col" id="filter_unanswered">Unanswered</button>
           </div>
           {% block content %}
           {% endblock %}
