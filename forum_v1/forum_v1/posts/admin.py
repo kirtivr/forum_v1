@@ -29,4 +29,4 @@ class PostsInline(admin.TabularInline):
 # Register the Admin classes for Post using the decorator
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    list_display = ('title', 'author', 'topic', 'contents', 'commends', 'replies')
+    list_display = ('title', 'author', 'topic', 'contents', 'commends', 'num_replies')

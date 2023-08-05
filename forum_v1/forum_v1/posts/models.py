@@ -32,7 +32,7 @@ class Author(models.Model):
         return f'{self.last_name}, {self.first_name}'
 
 class AbstractReply(models.Model):
-    author = models.ForeignKey('Author', on_delete=models.SET_NULL, null=True, related_name="author")
+    author = models.ForeignKey('Author', on_delete=models.SET_NULL, null=True, related_name="reply_author")
     original_post = models.ForeignKey('Post', on_delete=models.CASCADE, related_name="post")
 
     class Meta:
@@ -56,8 +56,6 @@ class Post(models.Model):
     # Otherwise this would have been a ManyToMany field.
     author = models.ForeignKey('Author', on_delete=models.SET_NULL, null=True, related_name="author")
     date_posted = models.DateTimeField(null=True, blank=True, auto_now=True)
-    # Includes date_posted.
-    latest_reply = models.DateTimeField(null=True, blank=True, auto_now=True)
     contents = models.CharField(max_length=10000, null=True, blank=True)
     commends = models.IntegerField(null=True, blank=True, default=0)
     num_replies = models.IntegerField(null=True, blank=True, default=0)
