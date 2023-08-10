@@ -61,8 +61,29 @@ def filter_posts(request, filter_by):
     
     return render(request, 'index.html', context=context)
 
+from .forms import NewPostForm
+from django.contrib.auth.decorators import login_required
+@login_required
 def new_post_view(request):
-    return render(request, template_name="posts/new_post.html")
+    if request.method == "POST":
+        form = NewPostForm(request.POST)
+        if form.is_valid():
+            new_post = Post()
+            current_user = request.user
+            current_author = current_user.author
+            new_post.author = current_author
+            new_post.title =  form.cleaned_data['title']
+            new_post.contents = form.cleaned_data['new_post']
+            new_post.commends = 0
+            new_post.num_replies = 0
+            new_post.save()
+            return HttpResponseRedirect(
+                reverse('posts')
+            )
+    else:
+        form = NewPostForm()
+        return render(request, template_name="posts/new_post.html",
+                    context={"form": form})
 
 def logout_view(request):
     logout(request)

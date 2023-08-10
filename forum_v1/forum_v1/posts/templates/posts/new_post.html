@@ -25,7 +25,12 @@
       <form action="" method="post">
         {% csrf_token %}
           <div class="form-group">
-              <input class="form-control" name="title" type="text" placeholder="Title?"/>
+            <table>
+              {{ form }}
+            </table>
+            <button type="submit">Submit</button>
+
+            <input class="form-control" name="title" type="text" placeholder="Title?"/>
             </div>
             <textarea id="target-editor" name="content" data-provide="markdown" rows="12">
               ### jQuery Bootstrap Markdown

@@ -3,19 +3,25 @@ from django.contrib.auth.models import User
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.urls import reverse
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+import logging
+logger = logging.getLogger(__name__)
 
 import uuid # Required for unique book instances
 
 class Author(models.Model):
     """Model representing an author."""
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     display_name = models.CharField(max_length=100)
     email = models.EmailField()
     designation = models.CharField(max_length=100)
-    commends = models.IntegerField()
-    replies = models.IntegerField()
-
+    commends = models.IntegerField(null=True, blank=True, default=0)
+    commends = models.IntegerField(null=True, blank=True, default=0)
+    num_posts = models.IntegerField(null=True, blank=True, default=0)
     class Meta:
         ordering = ['last_name', 'first_name']
 
@@ -31,6 +37,18 @@ class Author(models.Model):
         """String for representing the Model object."""
         return f'{self.last_name}, {self.first_name}'
 
+@receiver(post_save, sender=User)
+def create_author(sender, instance, created, **kwargs):
+    if created:
+        Author.objects.create(user=instance)
+
+@receiver(post_save, sender=User)
+def save_author(sender, instance, **kwargs):
+    logger.debug(f'instance = {instance}')
+    if instance:
+        Author.objects.create(user=instance)
+    #instance.author.save()
+
 class AbstractReply(models.Model):
     author = models.ForeignKey('Author', on_delete=models.SET_NULL, null=True, related_name="reply_author")
     original_post = models.ForeignKey('Post', on_delete=models.CASCADE, related_name="post")
@@ -38,19 +56,13 @@ class AbstractReply(models.Model):
     class Meta:
         abstract = True
 
+import posts.constants
 class Post(models.Model):
     """Model representing a post on the forum. This post could be an original post or a reply."""
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text='Unique ID for this post')
     title = models.CharField(max_length=500)
 
-    TOPICS = (
-        ('m', 'Maintenance'),
-        ('t', 'Tankers'),
-        ('s', 'Suez Max'),
-        ('e', 'Engine Room'),
-    )
-
-    topic = ArrayField(models.CharField(max_length=200, choices=TOPICS), blank=True)
+    topic = ArrayField(models.CharField(max_length=200, choices=posts.constants.TOPICS_CHOICES), blank=True)
 
     # Foreign Key used because post can only have one author, but authors can have multiple posts.
     # Otherwise this would have been a ManyToMany field.
@@ -90,13 +102,8 @@ class Reply(AbstractReply):
         return f'{self.id} ({self.title} by {self.author})'
 
 def ready():
-    from django.contrib.auth.models import User
-    user = User.objects.create_user('myusername',
-                                    'myemail@crazymail.com',
-                                    'mypassword')
-    user.first_name = 'Tyrone'
-    user.last_name = 'Citizen'
-    user.save()
+    pass
+
 # Create a new record using the model's constructor.
 #record = MyModelName(my_field_name="Instance #1")
 
