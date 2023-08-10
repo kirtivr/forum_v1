@@ -2,8 +2,6 @@
 
 {% load static %}
 
-{% block title %}<title>Homepage</title>{% endblock %}
-
 {% block content %}
 <meta charset="UTF-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -20,7 +18,7 @@
 <script src="{% static 'assets/dist/js/bootstrap-markdown.js' %}"></script>
 
 <div class="container">
-  <h3>Add a post!</h3>
+  <h3>Add a reply!</h3>
   <!-- An empty action sends the form data to the same view.-->
   <form action="" method="post">
     {% csrf_token %}

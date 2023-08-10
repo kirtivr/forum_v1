@@ -47,7 +47,7 @@ def save_author(sender, instance, **kwargs):
     logger.debug(f'instance = {instance}')
     if instance:
         Author.objects.create(user=instance)
-    #instance.author.save()
+    instance.author.save()
 
 class AbstractReply(models.Model):
     author = models.ForeignKey('Author', on_delete=models.SET_NULL, null=True, related_name="reply_author")

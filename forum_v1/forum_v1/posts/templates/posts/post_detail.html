@@ -1,0 +1,61 @@
+{% extends "base_generic.html" %}
+
+{% load static %}
+
+{% block title %}<title> {{post.title}}</title>{% endblock %}
+
+{% block content %}
+
+    <div class="row row-cols-md-4 mb-4 text-center">
+    <div class="col themed-grid-col">
+        <p><strong>Author:</strong> <a href="{{ post.author.get_absolute_url }}">{{ post.author.display_name }}</a></p>
+        <p>Date Posted: {{post.date_posted}}</p>
+        <p>Topic: 
+            {% for t in post.topic %}
+                {{t}}
+            {% endfor %}
+        </p>
+    </div>
+    <div class="col themed-grid-col">
+        {{post.contents}}
+    </div>
+  </div>
+
+  <div style="margin-left:20px;margin-top:20px">
+    <!--
+      This method is needed because you declare a ForeignKey (one-to many) field only in the "many" side
+      of the relationship (the BookInstance). Since you don't do anything to declare the relationship in
+      the other ("one") model, it (the Book) doesn't have any field to get the set of associated records.
+      
+      To overcome this problem, Django constructs an appropriately named "reverse lookup" function that you
+      can use. The name of the function is constructed by lower-casing the model name where the ForeignKey was
+      declared, followed by _set (i.e. so the function created in Book is bookinstance_set()).        
+    -->
+
+    <!--
+        Note: Here we use all() to get all records (the default). While you can use the filter() method to get a
+        subset of records in code, you can't do this directly in templates because:
+        
+        you can't specify arguments to functions.
+    -->
+    {% for reply in post.reply_set.all %}
+        <div class="row row-cols-md-4 mb-4 text-center">
+            <div class="col themed-grid-col">
+                <p><strong>Author:</strong> <a href="{{ post.author.get_absolute_url }}">{{ reply.author.display_name }}</a></p>
+                <p>Date Posted: {{reply.date_posted}}</p>
+            </div>
+            <div class="col themed-grid-col">
+                {{reply.contents}}
+            </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <footer class="footer mt-auto py-3">
+    <div class="container">
+      <span class="col themed-grid-col">
+        <a href="{% url 'new' %}">Reply</a>
+      </span>
+    </div>
+  </footer>
+{% endblock %}

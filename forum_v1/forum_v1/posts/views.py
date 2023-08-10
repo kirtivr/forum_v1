@@ -38,7 +38,6 @@ def filter_posts(request, filter_by):
     sk = request.session.keys()
     session = request.session.items()
 
-    post_context = None
     if filter_by == 'latest_activity':
         all_posts = Post.objects.order_by('latest_reply')
     elif filter_by == 'new_posts':
@@ -76,6 +75,7 @@ def new_post_view(request):
             new_post.contents = form.cleaned_data['new_post']
             new_post.commends = 0
             new_post.num_replies = 0
+            new_post.topic = form.cleaned_data['topics']
             new_post.save()
             return HttpResponseRedirect(
                 reverse('posts')
@@ -83,6 +83,29 @@ def new_post_view(request):
     else:
         form = NewPostForm()
         return render(request, template_name="posts/new_post.html",
+                    context={"form": form})
+
+@login_required
+def reply_view(request):
+    if request.method == "POST":
+        form = NewPostForm(request.POST)
+        if form.is_valid():
+            new_post = Post()
+            current_user = request.user
+            current_author = current_user.author
+            new_post.author = current_author
+            new_post.title =  form.cleaned_data['title']
+            new_post.contents = form.cleaned_data['new_post']
+            new_post.commends = 0
+            new_post.num_replies = 0
+            new_post.topic = form.cleaned_data['topics']
+            new_post.save()
+            return HttpResponseRedirect(
+                reverse('posts')
+            )
+    else:
+        form = NewPostForm()
+        return render(request, template_name="posts/reply_post.html",
                     context={"form": form})
 
 def logout_view(request):
