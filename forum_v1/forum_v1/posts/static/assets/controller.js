@@ -21,3 +21,16 @@ $("#filter_unanswered").click(
         window.location.href = window.location.href + 'unanswered'
     }
 );
+
+$("#unhide_reply").click(
+    function() {
+        alert('clicked')
+        if ($("#unhide_reply").html() == "Reply") {
+            $("#post_reply").css({"display": "block"})
+            $("#unhide_reply").html('Hide')
+        } else {
+            $("#post_reply").css({"display": "none"})
+            $("#unhide_reply").html('Reply')
+        }
+    }
+);

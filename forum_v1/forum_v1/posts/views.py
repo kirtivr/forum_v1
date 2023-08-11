@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 #from .models import Book, Author, BookInstance, Genre
 
 from django.views import generic
-from .models import Post, Reply
+from .models import Post, Reply, Author
 from django.template import Context, Template
 from django.template.loader import render_to_string
 
@@ -23,8 +23,8 @@ def index(request):
 
     context = {
         'session': session,
-        'header': render_to_string('headers/header.html'),
-        'sidebar': render_to_string('sidebars/new_sidebar.html'),
+        #'header': render_to_string('headers/header.html'),
+        #'sidebar': render_to_string('sidebars/new_sidebar.html'),
         'posts': render_to_string('posts/post_list_item.html',
                                   context = {'posts': Post.objects.all()})
     }
@@ -35,7 +35,6 @@ def filter_posts(request, filter_by):
     num_visits = request.session.get('num_visits', 0)
     request.session['num_visits'] = num_visits + 1
 
-    sk = request.session.keys()
     session = request.session.items()
 
     if filter_by == 'latest_activity':
@@ -54,13 +53,36 @@ def filter_posts(request, filter_by):
 
     context = {
         'session': session,
-        'header': render_to_string('headers/header.html', {}, request=request),
-        'sidebar': render_to_string('sidebars/new_sidebar.html', {},  request=request),
+        #'header': render_to_string('headers/header.html', {}, request=request),
+        #'sidebar': render_to_string('sidebars/new_sidebar.html', {},  request=request),
         'posts': render_to_string('posts/post_list_item.html', context = {'posts': all_posts}, request=request)}
     
     return render(request, 'index.html', context=context)
 
-from .forms import NewPostForm
+from django.template import RequestContext
+def post_detail(request, post_id):
+    # Fetch the post.
+    post = Post.objects.get(id=post_id)
+    context = {
+        'session': request.session.items(),
+        'post': post,
+        'reply_form': render_to_string('posts/reply_post.html', context={'reply_form': ReplyForm()})
+    }
+    # Reply added.
+    if request.method == "POST":
+        form = ReplyForm(request.POST)
+        if form.is_valid():
+            new_reply = Reply()
+            new_reply.original_post = post
+            current_user = request.user
+            current_author = current_user.author
+            new_reply.author = current_author
+            new_reply.contents = form.cleaned_data['new_reply']
+            new_reply.save()
+            return HttpResponseRedirect('post-detail', post_id)
+    return render(request, 'posts/post_detail.html', context=context)
+
+from .forms import NewPostForm, ReplyForm
 from django.contrib.auth.decorators import login_required
 @login_required
 def new_post_view(request):
@@ -85,28 +107,9 @@ def new_post_view(request):
         return render(request, template_name="posts/new_post.html",
                     context={"form": form})
 
-@login_required
-def reply_view(request):
-    if request.method == "POST":
-        form = NewPostForm(request.POST)
-        if form.is_valid():
-            new_post = Post()
-            current_user = request.user
-            current_author = current_user.author
-            new_post.author = current_author
-            new_post.title =  form.cleaned_data['title']
-            new_post.contents = form.cleaned_data['new_post']
-            new_post.commends = 0
-            new_post.num_replies = 0
-            new_post.topic = form.cleaned_data['topics']
-            new_post.save()
-            return HttpResponseRedirect(
-                reverse('posts')
-            )
-    else:
-        form = NewPostForm()
-        return render(request, template_name="posts/reply_post.html",
-                    context={"form": form})
+from django.views import generic
+class author_detail(generic.DetailView):
+    model = Author
 
 def logout_view(request):
     logout(request)

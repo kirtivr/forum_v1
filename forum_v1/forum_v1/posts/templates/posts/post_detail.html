@@ -8,7 +8,7 @@
 
     <div class="row row-cols-md-4 mb-4 text-center">
     <div class="col themed-grid-col">
-        <p><strong>Author:</strong> <a href="{{ post.author.get_absolute_url }}">{{ post.author.display_name }}</a></p>
+        <p><strong>Author:</strong> <a href="{{ post.author.get_absolute_url }}">{{ post.author.user.get_username }}</a></p>
         <p>Date Posted: {{post.date_posted}}</p>
         <p>Topic: 
             {% for t in post.topic %}
@@ -54,8 +54,24 @@
   <footer class="footer mt-auto py-3">
     <div class="container">
       <span class="col themed-grid-col">
-        <a href="{% url 'new' %}">Reply</a>
+        <button class="btn" id="unhide_reply">Reply</button>
+        <div id="post_reply" style="display: none">
+          {{reply_form}}
+        </div>
       </span>
     </div>
   </footer>
+  <script>
+    $("#unhide_reply").click(
+        function() {
+            if ($("#unhide_reply").html() == "Reply") {
+                $("#post_reply").css({"display": "block"})
+                $("#unhide_reply").html('Hide')
+            } else {
+                $("#post_reply").css({"display": "none"})
+                $("#unhide_reply").html('Reply')
+            }
+        }
+    );
+  </script>
 {% endblock %}

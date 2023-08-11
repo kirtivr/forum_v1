@@ -35,3 +35,16 @@ class NewPostForm(forms.Form):
             raise forms.ValidationError('No title given.')
         if not new_post:
             raise forms.ValidationError('Please add a post.')
+        
+class ReplyForm(forms.Form):
+    reply = forms.CharField(widget=forms.Textarea(
+        attrs={"id": "target-editor", "name": "content",
+               "data-provide": "markdown", "rows": "12",
+               "value": "# Enter your post here."}
+    ), max_length=1000)
+
+    def clean(self):
+        cleaned_data = super(ReplyForm, self).clean()
+        reply = cleaned_data.get('reply')
+        if not reply:
+            raise forms.ValidationError('Please add a post.')

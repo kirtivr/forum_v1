@@ -45,7 +45,7 @@ def create_author(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User)
 def save_author(sender, instance, **kwargs):
     logger.debug(f'instance = {instance}')
-    if instance:
+    if not Author.objects.filter(user=instance):
         Author.objects.create(user=instance)
     instance.author.save()
 
@@ -88,11 +88,10 @@ class Reply(AbstractReply):
 
     date_posted = models.DateTimeField(null=True, blank=True, auto_now=True)
     contents = models.CharField(max_length=10000, null=True, blank=True)
-    commends = models.IntegerField(null=True, blank=True, default=0)
 
-    def get_absolute_url(self):
-        """Returns the URL to access a particular post."""
-        return reverse('post-detail', args=[str(self.id)])    
+    #def get_absolute_url(self):
+    #    """Returns the URL to access a particular post."""
+    #    return reverse('post-detail', args=[str(self.id)])    
 
     class Meta:
         ordering = ['date_posted']

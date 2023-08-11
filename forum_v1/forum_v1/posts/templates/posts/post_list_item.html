@@ -10,11 +10,10 @@
           <div class="align-items-center">
             <div class="col-md-8 mb-3 mb-sm-0">
               <h5>
-                <a href="#" class="text-primary">{{post.title}}</a>
+                <a href="{% url 'post-detail' post_id=post.id %}" class="text-primary">{{post.title}}</a>
               </h5>
               <p class="text-sm">
-                <span class="op-6">Posted on </span>
-                <a class="text-black" href="#">{{post.date_posted}}</a>
+                <span class="op-6">Posted on {{post.date_posted}}</span>
                 <span class="op-6">by</span>
                 <a class="text-black" href="#">
                 {{post.author.first_name}}

@@ -1,8 +1,4 @@
-{% extends "base_generic.html" %}
-
 {% load static %}
-
-{% block content %}
 <meta charset="UTF-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -18,18 +14,16 @@
 <script src="{% static 'assets/dist/js/bootstrap-markdown.js' %}"></script>
 
 <div class="container">
-  <h3>Add a reply!</h3>
   <!-- An empty action sends the form data to the same view.-->
   <form action="" method="post">
     {% csrf_token %}
       <div class="form-group">
         <table>
-          {{ form }}
+          {{ reply_form }}
         </table>
         <hr/>
         <button type="submit" class="btn">Submit</button>
-    </form> 
-  </div>
+  </form> 
   <script>
     $("#target-editor").markdown({
       // auto focus after instantiated
@@ -67,4 +61,4 @@
       disabledButtons: []
     });
   </script>
-{% endblock %}
+</div>
