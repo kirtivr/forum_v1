@@ -38,16 +38,17 @@
         
         you can't specify arguments to functions.
     -->
-    {% for reply in post.reply_set.all %}
+    {% for reply in post.reply_to_post.all %}
+        <hr/>
         <div class="row row-cols-md-4 mb-4 text-center">
             <div class="col themed-grid-col">
-                <p><strong>Author:</strong> <a href="{{ post.author.get_absolute_url }}">{{ reply.author.display_name }}</a></p>
+                <p><strong>Author:</strong> <a href="{{ post.author.get_absolute_url }}">{{ reply.author.user.get_username }}</a></p>
                 <p>Date Posted: {{reply.date_posted}}</p>
             </div>
             <div class="col themed-grid-col">
                 {{reply.contents}}
             </div>
-      </div>
+        </div>
     {% endfor %}
   </div>
 
@@ -56,7 +57,7 @@
       <span class="col themed-grid-col">
         <button class="btn" id="unhide_reply">Reply</button>
         <div id="post_reply" style="display: none">
-          {{reply_form}}
+          {{reply}}
         </div>
       </span>
     </div>

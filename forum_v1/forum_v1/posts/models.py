@@ -50,7 +50,7 @@ def save_author(sender, instance, **kwargs):
 
 class AbstractReply(models.Model):
     author = models.ForeignKey('Author', on_delete=models.SET_NULL, null=True, related_name="reply_author")
-    original_post = models.ForeignKey('Post', on_delete=models.CASCADE, related_name="post")
+    original_post = models.ForeignKey('Post', on_delete=models.CASCADE, related_name="reply_to_post")
 
     class Meta:
         abstract = True
@@ -97,7 +97,7 @@ class Reply(AbstractReply):
 
     def __str__(self):
         """String for representing the Model object."""
-        return f'{self.id} ({self.title} by {self.author})'
+        return f'{self.id} by {self.author})'
 
 def ready():
     pass

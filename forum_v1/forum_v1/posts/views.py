@@ -63,23 +63,27 @@ from django.template import RequestContext
 def post_detail(request, post_id):
     # Fetch the post.
     post = Post.objects.get(id=post_id)
-    context = {
-        'session': request.session.items(),
-        'post': post,
-        'reply_form': render_to_string('posts/reply_post.html', context={'reply_form': ReplyForm()})
-    }
     # Reply added.
     if request.method == "POST":
         form = ReplyForm(request.POST)
         if form.is_valid():
-            new_reply = Reply()
-            new_reply.original_post = post
-            current_user = request.user
-            current_author = current_user.author
-            new_reply.author = current_author
-            new_reply.contents = form.cleaned_data['new_reply']
+            new_reply = Reply.objects.create(original_post=post, author=request.user.author, contents=form.cleaned_data['reply'])
             new_reply.save()
-            return HttpResponseRedirect('post-detail', post_id)
+            post = Post.objects.get(id=post_id)
+            context = {
+                'session': request.session.items(),
+                'post': post,
+                'reply': render_to_string('posts/reply_post.html', request=request, context={'reply_form': ReplyForm()})
+            }
+            return render(request, 'posts/post_detail.html', context=context)
+        else:
+            # Unexpected, log something here.
+            pass
+    context = {
+        'session': request.session.items(),
+        'post': post,
+        'reply': render_to_string('posts/reply_post.html', request=request, context={'reply_form': ReplyForm()})
+    }
     return render(request, 'posts/post_detail.html', context=context)
 
 from .forms import NewPostForm, ReplyForm
