@@ -111,6 +111,9 @@ from django.views import generic
 class author_detail(generic.DetailView):
     model = Author
 
+    def get_object(self, queryset=None):
+        return Author.objects.get(id=self.kwargs.get("author_id"))
+
 def logout_view(request):
     logout(request)
     return render(request,template_name='registration/logged_out.html')

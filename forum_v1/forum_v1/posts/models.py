@@ -20,7 +20,6 @@ class Author(models.Model):
     email = models.EmailField()
     designation = models.CharField(max_length=100)
     commends = models.IntegerField(null=True, blank=True, default=0)
-    commends = models.IntegerField(null=True, blank=True, default=0)
     num_posts = models.IntegerField(null=True, blank=True, default=0)
     class Meta:
         ordering = ['last_name', 'first_name']
