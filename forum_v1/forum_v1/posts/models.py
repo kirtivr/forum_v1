@@ -55,6 +55,11 @@ class AbstractReply(models.Model):
     class Meta:
         abstract = True
 
+import os
+from forum_v1.settings import STATIC_URL
+def uploaded_files_path(post_id):
+    return os.path.join(STATIC_URL, "assets", "uploads")
+
 import posts.constants
 class Post(models.Model):
     """Model representing a post on the forum. This post could be an original post or a reply."""
@@ -70,6 +75,7 @@ class Post(models.Model):
     contents = models.CharField(max_length=10000, null=True, blank=True)
     commends = models.IntegerField(null=True, blank=True, default=0)
     num_replies = models.IntegerField(null=True, blank=True, default=0)
+    file_paths = ArrayField(models.FilePathField(path=uploaded_files_path(id), default=None, null=True, blank=True))
 
     def get_absolute_url(self):
         """Returns the URL to access a particular post."""
@@ -87,6 +93,7 @@ class Reply(AbstractReply):
 
     date_posted = models.DateTimeField(null=True, blank=True, auto_now=True)
     contents = models.CharField(max_length=10000, null=True, blank=True)
+    file_paths = ArrayField(models.FilePathField(path=uploaded_files_path(id), default=None, null=True, blank=True))
 
     #def get_absolute_url(self):
     #    """Returns the URL to access a particular post."""
