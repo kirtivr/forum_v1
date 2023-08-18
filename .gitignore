@@ -1,3 +1,4 @@
 drop_databases.py
 *.log
 __pycache__/
+migrations/
