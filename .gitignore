@@ -1,4 +1,5 @@
-drop_databases.py
-*.log
-__pycache__/
-migrations/
+**/drop_databases.py
+**/*.log
+**/__pycache__/
+**/*.pyc
+**/migrations/
