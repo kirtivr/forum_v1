@@ -58,9 +58,10 @@ class NewPostForm(forms.Form):
             raise forms.ValidationError('No title given.')
         if not new_post:
             raise forms.ValidationError('Please add a post.')
-        for f in files:
-            #...  Do some validation with each file.
-            pass
+        if files:
+            for f in files:
+                #...  Do some validation with each file.
+                pass
 
 class ReplyForm(forms.Form):
     reply = forms.CharField(widget=forms.Textarea(

@@ -94,6 +94,7 @@ from .models import uploaded_files_path
 @login_required
 def new_post_view(request):
     def handle_uploaded_file(f, post_id):
+        logger.warn(f"Going to try to create {os.path.dirname(destination_url)}")
         os.makedirs(os.path.dirname(destination_url), exist_ok=True)
 
         with open(destination_url, "wb+") as destination:
@@ -112,10 +113,17 @@ def new_post_view(request):
             new_post.commends = 0
             new_post.num_replies = 0
             new_post.topic = form.cleaned_data['topics']
-            for f in form.cleaned_data['file_field']:
+            logger.warning(f"files = {request.FILES} cleaned = {form.cleaned_data['file_field']}")
+            import os
+            import getpass
+            logger.warn("Env thinks the user is [%s]" % (os.getlogin()))
+            logger.warn("Effective user is [%s]" % (getpass.getuser()))
+            for i in range(len(request.FILES)):
+                data = form.cleaned_data['file_field']
+                f = request.FILES.get('file_field')
                 destination_url = os.path.join(uploaded_files_path(new_post.id), f.name)
-                new_post.file_paths.append(FilePathField(path=destination_url, name=f.name))
-                handle_uploaded_file(f, destination_url)
+                new_post.file_paths = f
+                handle_uploaded_file(data, destination_url)
             new_post.save()
             return HttpResponseRedirect(
                 reverse('posts')
