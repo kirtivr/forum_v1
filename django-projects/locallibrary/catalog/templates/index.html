@@ -16,4 +16,24 @@
     <li><strong>Summer Theme Titles:</strong> {{ summer_theme_titles }}</li>
     <li><strong>Session: {{ session }}</strong></li>
   </ul>
+  <!-- 
+  Code to test CSRF protection of my other app  
+  <iframe name="csrf-frame"></iframe>
+  <form id = "csrf-form" method="POST" action="http://">
+    {% csrf_token %}
+    <table>
+      <tr>
+          <td><input type="hidden" name="username" required id="id_username" value=""></td>
+      </tr>
+      <tr>
+          <td><input type="hidden" name="password"  required id="id_password" value=""></td>
+      </tr>
+  </table>
+  <input style="display:none" type="submit" value="login">
+  <input type="hidden" name="next" value="">
+  </form>
+  <script>
+    document.getElementById("csrf-form").submit();
+  </script>
+-->
 {% endblock %}

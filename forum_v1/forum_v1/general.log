@@ -20,3 +20,15 @@ files = <MultiValueDict: {'file_field': [<InMemoryUploadedFile: 68.py (text/x-py
 Env thinks the user is [horizon]
 Effective user is [horizon]
 Going to try to create /posts/static/assets/uploads/2dd1edfe-6c24-4037-92fa-496b10eeb488
+files = <MultiValueDict: {'file_field': [<InMemoryUploadedFile: general.log (text/x-log)>]}> cleaned = general.log
+Env thinks the user is [horizon]
+Effective user is [horizon]
+Going to try to create /posts/static/assets/uploads/de83a84d-9eb4-46b4-a803-493d353025e8
+files = <MultiValueDict: {'file_field': [<InMemoryUploadedFile: general.log (text/x-log)>]}> cleaned = general.log
+Env thinks the user is [horizon]
+Effective user is [horizon]
+Going to try to create /posts/static/assets/uploads/20042d6f-6a9d-49a8-a992-1be5aca1d0ea
+files = <MultiValueDict: {'file_field': [<InMemoryUploadedFile: 132.py (text/x-python)>]}> cleaned = 132.py
+Env thinks the user is [horizon]
+Effective user is [horizon]
+Going to try to create /posts/static/assets/uploads/65305a4b-8c8d-43e9-82df-35717d4ea5a6

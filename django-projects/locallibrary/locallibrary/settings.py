@@ -29,7 +29,7 @@ with open('/etc/django-sk') as f:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["127.0.0.1","127.0.0.2"]
 
 
 # Application definition
