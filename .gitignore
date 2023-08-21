@@ -2,5 +2,4 @@ drop_databases.py
 *.log
 __pycache__/
 *.pyc
-general.log
 migrations/
