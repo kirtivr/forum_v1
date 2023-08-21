@@ -3,3 +3,4 @@ drop_databases.py
 __pycache__/
 *.pyc
 migrations/
+**/static/collected/
