@@ -56,9 +56,9 @@ class AbstractReply(models.Model):
         abstract = True
 
 import os
-from forum_v1.settings import STATIC_URL
+from forum_v1.settings import STATICFILES_DIRS
 def uploaded_files_path(post_id):
-    return os.path.join(STATIC_URL, "assets", "uploads", str(post_id))
+    return os.path.join(STATICFILES_DIRS[0], "assets", "uploads", str(post_id))
 
 import posts.constants
 class Post(models.Model):

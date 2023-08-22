@@ -48,20 +48,25 @@ class NewPostForm(forms.Form):
         choices=posts.constants.TOPICS_CHOICES
     )
 
-    def clean(self):
-        cleaned_data = super(NewPostForm, self).clean()
-        title = cleaned_data.get('title')
-        new_post = cleaned_data.get('new_post')
-        topic = cleaned_data.get('topics')
-        files = cleaned_data.get('file_field')
+    def clean_file_field(self):
+        data = self.cleaned_data['file_field']
+        if data:
+            # Do some validation here.
+            pass
+        return data
+
+    def clean_title(self):
+        title = self.cleaned_data.get('title')
         if not title:
             raise forms.ValidationError('No title given.')
-        if not new_post:
-            raise forms.ValidationError('Please add a post.')
-        if files:
-            for f in files:
-                #...  Do some validation with each file.
-                pass
+        
+        return title
+    
+    def clean_new_post(self):
+        new_post = self.cleaned_data.get('new_post')
+        #if not new_post:
+        #    raise forms.ValidationError('Please add a post.')
+        return new_post
 
 class ReplyForm(forms.Form):
     reply = forms.CharField(widget=forms.Textarea(

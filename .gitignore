@@ -4,3 +4,5 @@ __pycache__/
 *.pyc
 migrations/
 **/static/collected/
+**/assets/uploads/
+**/assets/img/

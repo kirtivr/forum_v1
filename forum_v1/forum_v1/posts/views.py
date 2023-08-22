@@ -23,8 +23,6 @@ def index(request):
 
     context = {
         'session': session,
-        #'header': render_to_string('headers/header.html'),
-        #'sidebar': render_to_string('sidebars/new_sidebar.html'),
         'posts': render_to_string('posts/post_list_item.html',
                                   context = {'posts': Post.objects.all()})
     }
@@ -53,8 +51,6 @@ def filter_posts(request, filter_by):
 
     context = {
         'session': session,
-        #'header': render_to_string('headers/header.html', {}, request=request),
-        #'sidebar': render_to_string('sidebars/new_sidebar.html', {},  request=request),
         'posts': render_to_string('posts/post_list_item.html', context = {'posts': all_posts}, request=request)}
     
     return render(request, 'index.html', context=context)
@@ -93,45 +89,60 @@ from django.db.models import FilePathField
 from .models import uploaded_files_path
 @login_required
 def new_post_view(request):
-    def handle_uploaded_file(f, post_id):
-        logger.warn(f"Going to try to create {os.path.dirname(destination_url)}")
+    def handle_uploaded_file(f, destination_url):
         os.makedirs(os.path.dirname(destination_url), exist_ok=True)
 
         with open(destination_url, "wb+") as destination:
             for chunk in f.chunks():
                 destination.write(chunk)
 
+    def handle_added_files(uncleaned_files, cleaned_data, new_post):
+        for i in range(len(uncleaned_files)):
+            destination_url = os.path.join(uploaded_files_path(new_post.id), uncleaned_files.name)
+            uncleaned_files.path = destination_url
+            new_post.file_paths = [uncleaned_files]
+            handle_uploaded_file(cleaned_data, destination_url)
+
+    def handle_new_post(form, new_post, request):
+        current_user = request.user
+        current_author = current_user.author
+        new_post.author = current_author
+        new_post.title =  form.cleaned_data['title']
+        new_post.contents = form.cleaned_data['new_post']
+        new_post.commends = 0
+        new_post.num_replies = 0
+        new_post.topic = form.cleaned_data['topics']
+        if request.FILES and form.cleaned_data['file_field']:
+            handle_added_files(request.FILES.get('file_field'), form.cleaned_data['file_field'], new_post)
+
+    form = None
     if request.method == "POST":
         form = NewPostForm(request.POST, request.FILES)
         if form.is_valid():
+            logger.warn('Form is valid.')
             new_post = Post()
-            current_user = request.user
-            current_author = current_user.author
-            new_post.author = current_author
-            new_post.title =  form.cleaned_data['title']
-            new_post.contents = form.cleaned_data['new_post']
-            new_post.commends = 0
-            new_post.num_replies = 0
-            new_post.topic = form.cleaned_data['topics']
-            logger.warning(f"files = {request.FILES} cleaned = {form.cleaned_data['file_field']}")
-            import os
-            import getpass
-            logger.warn("Env thinks the user is [%s]" % (os.getlogin()))
-            logger.warn("Effective user is [%s]" % (getpass.getuser()))
-            for i in range(len(request.FILES)):
-                data = form.cleaned_data['file_field']
-                f = request.FILES.get('file_field')
-                destination_url = os.path.join(uploaded_files_path(new_post.id), f.name)
-                new_post.file_paths = f
-                handle_uploaded_file(data, destination_url)
+            handle_new_post(form, new_post, request)
             new_post.save()
             return HttpResponseRedirect(
                 reverse('posts')
             )
+        else:
+            form = NewPostForm()
+            logger.warn('Form is not valid.')            
     else:
         form = NewPostForm()
-        return render(request, template_name="posts/new_post.html",
-                    context={"form": form})
+
+    return render(request, template_name="posts/new_post.html",
+                context={"form": form})
+
+def download_attachment(request, post_id, file_name):
+    file_path = os.path.join(uploaded_files_path(post_id), file_name)
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as fh:
+            response = HttpResponse(fh.read())
+            response['Content-Disposition'] = 'attachment; filename=' + os.path.basename(file_path)
+            return response
+    raise Http404
 
 from django.views import generic
 class author_detail(generic.DetailView):
@@ -149,7 +160,7 @@ def post_list_view(request):
 
 import datetime
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponseRedirect
+from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 
 
