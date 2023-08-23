@@ -1,24 +1,16 @@
-$("#filter_latest").click(
+$(".filter").click(
     function() {
-        window.location.href = window.location.href + 'latest_activity'
-    }
-);
-
-$("#filter_new").click(
-    function() {
-        window.location.href = window.location.href + 'new_posts'
-    }
-);
-
-$("#filter_best").click(
-    function() {
-        window.location.href = window.location.href + 'best'
-    }
-);
-
-$("#filter_unanswered").click(
-    function() {
-        window.location.href = window.location.href + 'unanswered'
+        var id = $(this).attr('id');
+        current_location = window.location.pathname
+        path_strs = current_location.split("/")
+        if (path_strs[-1] == "posts/") {
+            path_strs.push(id)
+        } else {
+            path_strs.pop()
+            path_strs.push(id)
+        }
+        new_location = window.location.hostname + path_strs.join("/")
+        window.location.href = new_location
     }
 );
 
@@ -34,3 +26,10 @@ $("#unhide_reply").click(
         }
     }
 );
+
+$("#search_bar").on("input", function(event) {
+    // Get the value in the search bar.
+    event.stopPropagation();
+    search_for_text = $("#search_bar").val();
+    alert(search_for_text);
+});

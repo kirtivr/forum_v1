@@ -37,7 +37,7 @@ def filter_posts(request, filter_by):
 
     if filter_by == 'latest_activity':
         all_posts = Post.objects.order_by('latest_reply')
-    elif filter_by == 'new_posts':
+    elif filter_by == 'new':
         all_posts = Post.objects.order_by('date_posted')
     elif filter_by == 'best':
         all_posts = Post.objects.order_by('commends')
