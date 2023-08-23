@@ -26,7 +26,7 @@
     {% csrf_token %}
       <div class="form-group">
         <table>
-          {{ form }}
+          {{ form.as_p }}
         </table>
         <hr/>
         <button type="submit" class="btn">Submit</button>

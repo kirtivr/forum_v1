@@ -119,7 +119,6 @@ def new_post_view(request):
     if request.method == "POST":
         form = NewPostForm(request.POST, request.FILES)
         if form.is_valid():
-            logger.warn('Form is valid.')
             new_post = Post()
             handle_new_post(form, new_post, request)
             new_post.save()
@@ -127,8 +126,7 @@ def new_post_view(request):
                 reverse('posts')
             )
         else:
-            form = NewPostForm()
-            logger.warn('Form is not valid.')            
+            form = NewPostForm()     
     else:
         form = NewPostForm()
 

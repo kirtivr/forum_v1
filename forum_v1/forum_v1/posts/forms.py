@@ -1,4 +1,5 @@
 import datetime
+from typing import Optional
 
 from django import forms
 
@@ -8,14 +9,17 @@ from django.utils.translation import gettext_lazy as _
 from django.forms import ModelForm
 
 import posts.constants
+import logging
+logger = logging.getLogger(__name__)
 
 class MultipleFileInput(forms.ClearableFileInput):
     allow_multiple_selected = True
 
-
 class MultipleFileField(forms.FileField):
     def __init__(self, *args, **kwargs):
-        kwargs.setdefault("widget", MultipleFileInput())
+        kwargs.setdefault("widget", MultipleFileInput(
+            attrs = {"multiple": True}
+        ))
         super().__init__(*args, **kwargs)
 
     def clean(self, data, initial=None):
@@ -25,10 +29,6 @@ class MultipleFileField(forms.FileField):
         else:
             result = single_file_clean(data, initial)
         return result
-
-
-class FileFieldForm(forms.Form):
-    file_field = MultipleFileField()
 
 class NewPostForm(forms.Form):
     title = forms.CharField(
