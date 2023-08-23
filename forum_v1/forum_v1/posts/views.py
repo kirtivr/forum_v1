@@ -34,15 +34,15 @@ def filter_posts(request, filter_by):
     request.session['num_visits'] = num_visits + 1
 
     session = request.session.items()
-
+    all_posts = Post.objects.all()
     if filter_by == 'latest_activity':
-        all_posts = Post.objects.order_by('latest_reply')
-    elif filter_by == 'new':
-        all_posts = Post.objects.order_by('date_posted')
+        pass
+    elif filter_by == 'new_posts':
+        all_posts = Post.objects.order_by('-date_posted')
     elif filter_by == 'best':
-        all_posts = Post.objects.order_by('commends')
+        all_posts = Post.objects.order_by('-commends')
     elif filter_by == 'unanswered':
-        ordered_replies = Reply.objects.order_by('post_date')
+        ordered_replies = Reply.objects.order_by('-post_date')
         posts = set()
         for reply in ordered_replies:
             if reply.original_post not in posts:

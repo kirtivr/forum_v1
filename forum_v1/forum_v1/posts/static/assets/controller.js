@@ -2,15 +2,15 @@ $(".filter").click(
     function() {
         var id = $(this).attr('id');
         current_location = window.location.pathname
-        path_strs = current_location.split("/")
-        if (path_strs[-1] == "posts/") {
+        path_strs = current_location.split("/").filter(n => n)
+        if (path_strs[path_strs.length - 1] == "posts") {
             path_strs.push(id)
         } else {
             path_strs.pop()
             path_strs.push(id)
         }
-        new_location = window.location.hostname + path_strs.join("/")
-        window.location.href = new_location
+        new_location = path_strs.join("/")
+        window.location.pathname = "/" + new_location
     }
 );
 
