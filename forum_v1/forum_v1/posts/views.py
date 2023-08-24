@@ -36,7 +36,7 @@ def filter_posts(request, filter_by):
     session = request.session.items()
     all_posts = Post.objects.all()
     if filter_by == 'latest_activity':
-        pass
+        all_posts = Post.objects.order_by('-latest_activity')
     elif filter_by == 'new_posts':
         all_posts = Post.objects.order_by('-date_posted')
     elif filter_by == 'best':
@@ -47,7 +47,7 @@ def filter_posts(request, filter_by):
         for reply in ordered_replies:
             if reply.original_post not in posts:
                 posts.add(reply.original_post)
-        all_posts = list(posts)
+        all_posts = set(all_posts).difference(posts)
 
     context = {
         'session': session,
@@ -64,6 +64,7 @@ def post_detail(request, post_id):
         form = ReplyForm(request.POST)
         if form.is_valid():
             new_reply = Reply.objects.create(original_post=post, author=request.user.author, contents=form.cleaned_data['reply'])
+            post.latest_activity = new_reply.date_posted
             new_reply.save()
             post = Post.objects.get(id=post_id)
             context = {

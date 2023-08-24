@@ -33,3 +33,10 @@ $("#search_bar").on("input", function(event) {
     search_for_text = $("#search_bar").val();
     alert(search_for_text);
 });
+
+$("#search_bar").on("input", function(event) {
+    // Get the value in the search bar.
+    event.stopPropagation();
+    search_for_text = $("#search_bar").val();
+    alert(search_for_text);
+});

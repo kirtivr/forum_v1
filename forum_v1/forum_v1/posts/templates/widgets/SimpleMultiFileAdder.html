@@ -1,0 +1,37 @@
+<div id="file_adder">
+<input type="file" name="file_field" required id="id_file_field" data-files=""
+{% for name, value in widget.attrs.items %}
+{% if value is not False %} {{ name }}
+{% if value is not True %}="{{ value|stringformat:'s' }}"
+{% endif %}
+{% endif %}
+{% endfor %}>
+<button class="clear_files">
+    Clear All
+</button>
+<script>
+    $(".clear_files").click(
+        function(event) {
+            event.stopPropagation();
+            $(this).data("files", [])
+            $(this).prop("files", [])
+            $(this).val()
+        }
+    )
+
+    $('#id_file_field').on("input", function(event) {
+        // Get the value in the search bar.
+        event.stopPropagation();
+        new_file = $(this).val()
+        console.log(new_file)
+        if (Array.isArray($(this).data("files"))) {
+            $(this).data("files").push(new_file)
+        } else {
+            $(this).data("files", [new_file])
+        }
+        var names = $.map($(this).data("files"), function(val) { return val.substring(val.lastIndexOf('/') + 1)});
+        console.log(names)
+        $(this).val(names.join(","))
+    })
+</script>
+</div>

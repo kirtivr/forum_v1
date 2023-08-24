@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 
 class MultipleFileInput(forms.ClearableFileInput):
     allow_multiple_selected = True
+    template_name = 'widgets/SimpleMultiFileAdder.html'
 
 class MultipleFileField(forms.FileField):
     def __init__(self, *args, **kwargs):

@@ -44,9 +44,12 @@ def create_author(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User)
 def save_author(sender, instance, **kwargs):
     logger.debug(f'instance = {instance}')
-    if not Author.objects.filter(user=instance):
-        Author.objects.create(user=instance)
-    instance.author.save()
+    try:
+        if not Author.objects.filter(user=instance).exists() and Post.objects.count() >= 0:
+            Author.objects.create(user=instance)
+            instance.author.save()
+    except:
+        return
 
 class AbstractReply(models.Model):
     author = models.ForeignKey('Author', on_delete=models.SET_NULL, null=True, related_name="reply_author")
@@ -72,6 +75,7 @@ class Post(models.Model):
     # Otherwise this would have been a ManyToMany field.
     author = models.ForeignKey('Author', on_delete=models.SET_NULL, null=True, related_name="author")
     date_posted = models.DateTimeField(null=True, blank=True, auto_now=True)
+    latest_activity = models.DateTimeField(null=True, blank=True, auto_now=True)
     contents = models.CharField(max_length=10000, null=True, blank=True)
     commends = models.IntegerField(null=True, blank=True, default=0)
     num_replies = models.IntegerField(null=True, blank=True, default=0)
