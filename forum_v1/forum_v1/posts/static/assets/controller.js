@@ -17,6 +17,9 @@ $(".filter").click(
 $("#search_bar").on("input", function(event) {
     // Get the value in the search bar.
     event.stopPropagation();
-    search_for_text = $("#search_bar").val();
-    alert(search_for_text);
+    if (event.which == 13) {
+        search_for_text = $("#search_bar").val();
+        alert('here')
+        window.location.search = "q=search_for_text"
+    } 
 });

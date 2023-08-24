@@ -20,7 +20,8 @@ def index(request):
 
     sk = request.session.keys()
     session = request.session.items()
-
+    if request.GET:
+        logger.warn(f'received search query {request.GET}')
     context = {
         'session': session,
         'posts': render_to_string('posts/post_list_item.html',
