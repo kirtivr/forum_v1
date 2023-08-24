@@ -15,16 +15,27 @@
 
 <div class="container">
   <!-- An empty action sends the form data to the same view.-->
-  <form action="" method="post">
+  <form action="" enctype="multipart/form-data" method="post">
     {% csrf_token %}
       <div class="form-group">
         <table>
-          {{ reply_form }}
+          {{ reply_form.as_p }}
         </table>
         <hr/>
         <button type="submit" class="btn">Submit</button>
-  </form> 
+  </form>
   <script>
+  $("#unhide_reply").click(
+    function() {
+        if ($("#unhide_reply").html() == "Reply") {
+            $("#post_reply").css({"display": "block"})
+            $("#unhide_reply").html('Hide')
+        } else {
+            $("#post_reply").css({"display": "none"})
+            $("#unhide_reply").html('Reply')
+        }
+    }
+  );
     $("#target-editor").markdown({
       // auto focus after instantiated
       autofocus: false,

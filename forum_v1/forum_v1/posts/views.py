@@ -42,7 +42,7 @@ def filter_posts(request, filter_by):
     elif filter_by == 'best':
         all_posts = Post.objects.order_by('-commends')
     elif filter_by == 'unanswered':
-        ordered_replies = Reply.objects.order_by('-post_date')
+        ordered_replies = Reply.objects.order_by('-date_posted')
         posts = set()
         for reply in ordered_replies:
             if reply.original_post not in posts:
@@ -55,16 +55,40 @@ def filter_posts(request, filter_by):
     
     return render(request, 'index.html', context=context)
 
+def handle_uploaded_file(f, destination_url):
+    os.makedirs(os.path.dirname(destination_url), exist_ok=True)
+
+    with open(destination_url, "wb+") as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
+
+def handle_added_files(cleaned_data, new_post):
+    for i in range(len(cleaned_data)):
+        destination_url = os.path.join(uploaded_files_path(new_post.id), cleaned_data[i].name)
+        if not new_post.file_paths:
+            new_post.file_paths = [cleaned_data[i].name]
+        else:
+            new_post.file_paths.append(cleaned_data[i].name)
+        handle_uploaded_file(cleaned_data[i], destination_url)
+
 from django.template import RequestContext
 def post_detail(request, post_id):
+    def handle_new_reply(form, new_reply, request):
+        new_reply.author=request.user.author
+        new_reply.contents=form.cleaned_data['reply']
+        if form.cleaned_data['file_field']:
+            handle_added_files(form.cleaned_data['file_field'], new_reply)
+
     # Fetch the post.
     post = Post.objects.get(id=post_id)
     # Reply added.
     if request.method == "POST":
-        form = ReplyForm(request.POST)
+        form = ReplyForm(request.POST, request.FILES)
         if form.is_valid():
-            new_reply = Reply.objects.create(original_post=post, author=request.user.author, contents=form.cleaned_data['reply'])
+            new_reply = Reply()
+            new_reply.original_post = post
             post.latest_activity = new_reply.date_posted
+            handle_new_reply(form, new_reply, request)
             new_reply.save()
             post = Post.objects.get(id=post_id)
             context = {
@@ -90,20 +114,6 @@ from django.db.models import FilePathField
 from .models import uploaded_files_path
 @login_required
 def new_post_view(request):
-    def handle_uploaded_file(f, destination_url):
-        os.makedirs(os.path.dirname(destination_url), exist_ok=True)
-
-        with open(destination_url, "wb+") as destination:
-            for chunk in f.chunks():
-                destination.write(chunk)
-
-    def handle_added_files(uncleaned_files, cleaned_data, new_post):
-        for i in range(len(uncleaned_files)):
-            destination_url = os.path.join(uploaded_files_path(new_post.id), uncleaned_files.name)
-            uncleaned_files.path = destination_url
-            new_post.file_paths = [uncleaned_files]
-            handle_uploaded_file(cleaned_data, destination_url)
-
     def handle_new_post(form, new_post, request):
         current_user = request.user
         current_author = current_user.author
@@ -113,8 +123,8 @@ def new_post_view(request):
         new_post.commends = 0
         new_post.num_replies = 0
         new_post.topic = form.cleaned_data['topics']
-        if request.FILES and form.cleaned_data['file_field']:
-            handle_added_files(request.FILES.get('file_field'), form.cleaned_data['file_field'], new_post)
+        if form.cleaned_data['file_field']:
+            handle_added_files(form.cleaned_data['file_field'], new_post)
 
     form = None
     if request.method == "POST":

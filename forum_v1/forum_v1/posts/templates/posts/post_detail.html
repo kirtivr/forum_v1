@@ -57,7 +57,7 @@
             <div class="col themed-grid-col">
               Attachments:
               {% for file in reply.file_paths %}
-                <a href={{file.path}}>{{file.name}}</a>
+                <a href={{file}}>{{file}}</a>
               {% endfor %}
             </div>
         </div>
@@ -74,17 +74,4 @@
       </span>
     </div>
   </footer>
-  <script>
-    $("#unhide_reply").click(
-        function() {
-            if ($("#unhide_reply").html() == "Reply") {
-                $("#post_reply").css({"display": "block"})
-                $("#unhide_reply").html('Hide')
-            } else {
-                $("#post_reply").css({"display": "none"})
-                $("#unhide_reply").html('Reply')
-            }
-        }
-    );
-  </script>
 {% endblock %}

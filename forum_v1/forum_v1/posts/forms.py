@@ -77,8 +77,15 @@ class ReplyForm(forms.Form):
     ), max_length=1000)
     file_field = MultipleFileField()
 
-    def clean(self):
-        cleaned_data = super(ReplyForm, self).clean()
-        reply = cleaned_data.get('reply')
+    def clean_file_field(self):
+        data = self.cleaned_data.get('file_field')
+        if data:
+            # Do some validation here.
+            pass
+        return data
+
+    def clean_reply(self):
+        reply = self.cleaned_data.get('reply')
         if not reply:
             raise forms.ValidationError('Please add a post.')
+        return reply
