@@ -14,12 +14,12 @@ $(".filter").click(
     }
 );
 
-$("#search_bar").on("input", function(event) {
+$("#search_bar").on("keydown", function(event) {
     // Get the value in the search bar.
     event.stopPropagation();
     if (event.which == 13) {
         search_for_text = $("#search_bar").val();
         alert('here')
-        window.location.search = "q=search_for_text"
+        window.location.search = "q=search text"
     } 
 });

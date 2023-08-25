@@ -110,28 +110,94 @@ class Reply(AbstractReply):
         """String for representing the Model object."""
         return f'{self.id} by {self.author})'
 
+def find_edit_distance(w1, w2):
+    N = len(w1)
+    M = len(w2)
+
+    if N > M:
+        w2 = w2 + (''.join(' ' for i in range(N - M)))
+    else:
+        w1 = w1 + (''.join(' ' for i in range(M - N)))
+
+    grid = [[0 for i in range(max(M, N) + 1)] for j in range(max(M, N) + 1)]
+
+    for i in range(1, max(M, N)):
+        for j in range(1, max(M, N)):
+            grid[i][j] = min(
+                grid[i - 1][j - 1],
+                grid[i - 1][j],
+                grid[i][j - 1]
+            )
+            if w1[i - 1] != w2[j - 1]:
+                grid[i][j] += 1
+
+    return grid[max(M, N)][max(M, N)]
+
+def score_number_of_in_order_words(match_indices):
+    match_indices = list(filter(lambda idx : False if idx == None else True, match_indices))
+    smi = sorted(match_indices)
+    total_score = 0
+    for i in range(len(match_indices)):
+        if match_indices[i] == smi[i]:
+            total_score += 2
+    
+    return total_score
+
+def edit_distance_search_for_words(words, text):
+    total_score = 0
+    match_indices = []
+    for word in words:
+        word_score = 0
+        matched_at = None
+        for idx, text_word in enumerate(text):
+            dist = find_edit_distance(word, text_word)
+            if dist == 0:
+                word_score = 3
+                matched_at = idx
+                break
+            elif dist == 1:
+                if word_score == 1:
+                    word_score = 2
+                    matched_at = idx
+            elif dist == 2:
+                if word_score == 0:
+                    word_score = 1
+                    matched_at = idx
+        if word_score == 0:
+            match_indices.append(None)
+        else:
+            match_indices.append(matched_at)
+        total_score += word_score
+
+    ordering_score = score_number_of_in_order_words(match_indices)
+    return total_score + ordering_score
+
+def search_posts_and_replies(search_query):
+    # Return a sorted list of posts and replies which contain a full or partial match of the given search query.
+    # An edit distance match, with dist = 0 gets 3 point.
+    # An edit distance match, with dist = 1 gets 2 point.
+    # An edit distance match, with dist = 2 gets 1 point.
+    # Sort posts and reply texts with highest score and return them in order.
+
+    # Ordering should also technically matter.
+    # Not sure how much, but for now we give a +2 point per word if
+    # order matches.
+    posts = Post.objects.all()
+    replies = Reply.objects.all()
+
+    posts_score = {posts[i].id:0 for i in range(len(posts))}
+
+    words = search_query.split()
+    for i, post in enumerate(posts):
+        score = edit_distance_search_for_words(words, post.contents)
+        posts_score[post.id] = score
+
+    for i, reply in enumerate(replies):
+        score = edit_distance_search_for_words(words, reply.contents)
+        posts_score[reply.original_post.id] = max(posts_score[reply.original_post.id], score)
+
+    sorted_post_ids = [post_id for post_id, score in sorted(posts_score.items(), key=lambda item: item[1], reverse=True)]
+    return list(filter(lambda post_id: True if posts_score[post_id] >= len(words) else False, sorted_post_ids))
+
 def ready():
     pass
-
-# Create a new record using the model's constructor.
-#record = MyModelName(my_field_name="Instance #1")
-
-# Save the object into the database.
-#record.save()
-
-# Access model field values using Python attributes.
-#print(record.id) # should return 1 for the first record.
-#print(record.my_field_name) # should print 'Instance #1'
-
-# Change record by modifying the fields, then calling save().
-#record.my_field_name = "New Instance Name"
-#record.save()
-
-#all_books = Book.objects.all()
-
-# can also be:
-# icontains (case insensitive), iexact (case-insensitive exact match), exact (case-sensitive exact match) and in, gt (greater than), startswith, etc
-
-#wild_books = Book.objects.filter(title__contains='wild')
-#number_wild_books = wild_books.count()
-

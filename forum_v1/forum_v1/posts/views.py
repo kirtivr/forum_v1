@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 #from .models import Book, Author, BookInstance, Genre
 
 from django.views import generic
-from .models import Post, Reply, Author
+from .models import Post, Reply, Author, search_posts_and_replies
 from django.template import Context, Template
 from django.template.loader import render_to_string
 
@@ -20,12 +20,18 @@ def index(request):
 
     sk = request.session.keys()
     session = request.session.items()
+    all_posts = Post.objects.all()
     if request.GET:
-        logger.warn(f'received search query {request.GET}')
+        search_query = request.GET.get('q')
+        if search_query:
+            all_post_ids = search_posts_and_replies(search_query)
+            logging.warn(f'all post_ids = {all_post_ids}')         	
+            all_posts = Post.objects.filter(id__in=all_post_ids)
+
     context = {
         'session': session,
         'posts': render_to_string('posts/post_list_item.html',
-                                  context = {'posts': Post.objects.all()})
+                                  context = {'posts': all_posts})
     }
 
     return render(request, 'index.html', context=context)
