@@ -25,7 +25,7 @@ def index(request):
         search_query = request.GET.get('q')
         if search_query:
             all_post_ids = search_posts_and_replies(search_query)
-            logging.warn(f'all post_ids = {all_post_ids}')         	
+            #logger.warn(f'all post_ids = {all_post_ids}')         	
             all_posts = Post.objects.filter(id__in=all_post_ids)
 
     context = {

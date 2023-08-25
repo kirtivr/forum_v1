@@ -14,12 +14,38 @@ $(".filter").click(
     }
 );
 
+function add_parameter(url, param, value){
+    var hash       = {};
+    var parser     = document.createElement('a');
+
+    parser.href    = url;
+
+    var parameters = parser.search.split(/\?|&/);
+
+    for(var i=0; i < parameters.length; i++) {
+        if(!parameters[i])
+            continue;
+
+        var ary      = parameters[i].split('=');
+        hash[ary[0]] = ary[1];
+    }
+
+    hash[param] = value;
+
+    var list = [];  
+    Object.keys(hash).forEach(function (key) {
+        list.push(key + '=' + hash[key]);
+    });
+
+    parser.search = '?' + list.join('&');
+    return parser.href;
+}
+
 $("#search_bar").on("keydown", function(event) {
     // Get the value in the search bar.
     event.stopPropagation();
     if (event.which == 13) {
         search_for_text = $("#search_bar").val();
-        alert('here')
-        window.location.search = "q=search text"
+        window.location.href = add_parameter(window.location.href, "q", search_for_text)
     } 
 });

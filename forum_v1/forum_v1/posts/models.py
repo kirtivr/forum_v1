@@ -121,15 +121,25 @@ def find_edit_distance(w1, w2):
 
     grid = [[0 for i in range(max(M, N) + 1)] for j in range(max(M, N) + 1)]
 
-    for i in range(1, max(M, N)):
-        for j in range(1, max(M, N)):
+    for i in range(max(M, N) + 1):
+        for j in range(max(M, N) + 1):
             grid[i][j] = min(
                 grid[i - 1][j - 1],
                 grid[i - 1][j],
                 grid[i][j - 1]
             )
+            if i == 0 and j == 0:
+                grid[i][j] = 0
+                continue
+            elif i == 0:
+                grid[i][j] = grid[i][j - 1] + 1
+                continue
+            elif j == 0:
+                grid[i][j] = grid[i - 1][j] + 1
+                continue
             if w1[i - 1] != w2[j - 1]:
                 grid[i][j] += 1
+    #logger.warn(f'w1 = {w1} w2 = {w2} grid = {grid}')
 
     return grid[max(M, N)][max(M, N)]
 
@@ -167,6 +177,7 @@ def edit_distance_search_for_words(words, text):
             match_indices.append(None)
         else:
             match_indices.append(matched_at)
+        #logger.warn(f'word score for search word {word} is {word_score} matched_at word = {text[matched_at]}')
         total_score += word_score
 
     ordering_score = score_number_of_in_order_words(match_indices)
@@ -189,12 +200,16 @@ def search_posts_and_replies(search_query):
 
     words = search_query.split()
     for i, post in enumerate(posts):
-        score = edit_distance_search_for_words(words, post.contents)
+        score = edit_distance_search_for_words(words, post.contents.split())
         posts_score[post.id] = score
 
+    #logger.warn(f'posts_score = {posts_score}')
+
     for i, reply in enumerate(replies):
-        score = edit_distance_search_for_words(words, reply.contents)
+        score = edit_distance_search_for_words(words, reply.contents.split())
         posts_score[reply.original_post.id] = max(posts_score[reply.original_post.id], score)
+
+    #logger.warn(f'posts_score = {posts_score}')
 
     sorted_post_ids = [post_id for post_id, score in sorted(posts_score.items(), key=lambda item: item[1], reverse=True)]
     return list(filter(lambda post_id: True if posts_score[post_id] >= len(words) else False, sorted_post_ids))
