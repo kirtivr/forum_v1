@@ -43,7 +43,7 @@ class NewPostForm(forms.Form):
                "data-provide": "markdown", "rows": "12",
                "value": "# Enter your post here."}
     ), max_length=1000)
-    file_field = MultipleFileField()
+    file_field = MultipleFileField(required=False)
     topics = forms.MultipleChoiceField(
         widget=forms.CheckboxSelectMultiple,
         choices=posts.constants.TOPICS_CHOICES
@@ -75,7 +75,7 @@ class ReplyForm(forms.Form):
                "data-provide": "markdown", "rows": "12",
                "value": "# Enter your post here."}
     ), max_length=1000)
-    file_field = MultipleFileField()
+    file_field = MultipleFileField(required=False)
 
     def clean_file_field(self):
         data = self.cleaned_data.get('file_field')
