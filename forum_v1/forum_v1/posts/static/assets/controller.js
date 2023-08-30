@@ -41,11 +41,9 @@ function add_parameter(url, param, value){
     return parser.href;
 }
 
-$("#search_bar").on("keydown", function(event) {
+$("#do_search_btn").click(function(event) {
     // Get the value in the search bar.
     event.stopPropagation();
-    if (event.which == 13) {
-        search_for_text = $("#search_bar").val();
-        window.location.href = add_parameter(window.location.href, "q", search_for_text)
-    } 
+    search_for_text = $("#search_bar").val();
+    window.location.href = add_parameter(window.location.href, "q", search_for_text)
 });
