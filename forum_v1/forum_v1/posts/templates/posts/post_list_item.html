@@ -14,8 +14,8 @@
               <p class="text-sm">
                 <span>Posted on {{post.date_posted}}</span>
                 <span>by</span>
-                <a class="text-black" href="#">
-                {{post.author.first_name}}
+                <a class="text-black" href="{{ post.author.get_absolute_url }}">
+                {{post.author.user.username}}
                 </a>
               </p>
               <div class="text-sm">
