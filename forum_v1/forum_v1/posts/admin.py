@@ -15,10 +15,10 @@ class PostsInline(admin.TabularInline):
 # Define the admin class
 @admin.register(Author)
 class AuthorAdmin(admin.ModelAdmin):
-    list_display = ('last_name', 'first_name', 'display_name', 'email', 'designation', 'commends', 'num_posts')
+    list_display = ['designation']
 
     # will display horizontally if you further group them in a tuple (as shown in the "date" fields below)
-    fields = ['last_name', 'first_name', 'display_name', 'email', 'designation', ('commends', 'num_posts')]
+    fields = ['designation']
 
     inlines = [PostsInline]
 
@@ -29,4 +29,4 @@ class PostsInline(admin.TabularInline):
 # Register the Admin classes for Post using the decorator
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    list_display = ('title', 'author', 'topic', 'contents', 'commends', 'num_replies')
+    list_display = ('title', 'author', 'topic', 'contents')

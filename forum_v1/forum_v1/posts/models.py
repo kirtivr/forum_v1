@@ -14,15 +14,7 @@ import uuid # Required for unique book instances
 class Author(models.Model):
     """Model representing an author."""
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
-    display_name = models.CharField(max_length=100)
-    email = models.EmailField()
     designation = models.CharField(max_length=100)
-    commends = models.IntegerField(null=True, blank=True, default=0)
-    num_posts = models.IntegerField(null=True, blank=True, default=0)
-    class Meta:
-        ordering = ['last_name', 'first_name']
 
     def get_display_picture(self):
         """Returns the URI for the display picture for the author."""
@@ -34,7 +26,7 @@ class Author(models.Model):
 
     def __str__(self):
         """String for representing the Model object."""
-        return f'{self.last_name}, {self.first_name}'
+        return f'{self.user.last_name}, {self.user.first_name}'
 
 @receiver(post_save, sender=User)
 def create_author(sender, instance, created, **kwargs):
@@ -77,8 +69,6 @@ class Post(models.Model):
     date_posted = models.DateTimeField(null=True, blank=True, auto_now=True)
     latest_activity = models.DateTimeField(null=True, blank=True, auto_now=True)
     contents = models.CharField(max_length=10000, null=True, blank=True)
-    commends = models.IntegerField(null=True, blank=True, default=0)
-    num_replies = models.IntegerField(null=True, blank=True, default=0)
     file_paths = ArrayField(models.FilePathField(path=uploaded_files_path(id), default=None, null=True, blank=True))
 
     def get_absolute_url(self):

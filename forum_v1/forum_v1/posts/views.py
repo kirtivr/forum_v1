@@ -14,6 +14,7 @@ from .models import Post, Reply, Author, search_posts_and_replies
 from django.template import Context, Template
 from django.template.loader import render_to_string
 
+from django.core.paginator import Paginator
 def index(request):
     num_visits = request.session.get('num_visits', 0)
     request.session['num_visits'] = num_visits + 1
@@ -21,6 +22,7 @@ def index(request):
     sk = request.session.keys()
     session = request.session.items()
     all_posts = Post.objects.all()
+    search_query = None
     if request.GET:
         search_query = request.GET.get('q')
         if search_query:
@@ -28,10 +30,16 @@ def index(request):
             #logger.warn(f'all post_ids = {all_post_ids}')         	
             all_posts = Post.objects.filter(id__in=all_post_ids)
 
+    paginator = Paginator(all_posts, 4)
+    page_number = request.GET.get("page") if request.GET.get("page") else 0
+    page_obj = paginator.get_page(page_number)
+
+    #logger.warn(f'page_obj = {page_obj} number = {page_obj.number} page_obj.previous_page_number = {page_obj.previous_page_number} next = {page_obj.next_page_number}')
     context = {
         'session': session,
         'posts': render_to_string('posts/post_list_item.html',
-                                  context = {'posts': all_posts})
+                                  context = {'page_obj': page_obj}),
+        'search_query': search_query if search_query else "", 'page_obj': page_obj
     }
 
     return render(request, 'index.html', context=context)
@@ -46,19 +54,32 @@ def filter_posts(request, filter_by):
         all_posts = Post.objects.order_by('-latest_activity')
     elif filter_by == 'new_posts':
         all_posts = Post.objects.order_by('-date_posted')
-    elif filter_by == 'best':
-        all_posts = Post.objects.order_by('-commends')
     elif filter_by == 'unanswered':
         ordered_replies = Reply.objects.order_by('-date_posted')
         posts = set()
         for reply in ordered_replies:
             if reply.original_post not in posts:
                 posts.add(reply.original_post)
-        all_posts = set(all_posts).difference(posts)
+        all_posts = list(set(all_posts).difference(posts))
+
+    search_query = None
+    if request.GET:
+        search_query = request.GET.get('q')
+        if search_query:
+            all_post_ids = search_posts_and_replies(search_query)
+            #logger.warn(f'all post_ids = {all_post_ids}')         	
+            all_posts = filter(lambda post : True if post.id in all_post_ids else False, all_posts)
+
+    paginator = Paginator(all_posts, 4)
+    page_number = request.GET.get("page") if request.GET.get("page") else 0
+    page_obj = paginator.get_page(page_number)
 
     context = {
         'session': session,
-        'posts': render_to_string('posts/post_list_item.html', context = {'posts': all_posts}, request=request)}
+        'posts': render_to_string('posts/post_list_item.html',
+                                  context = {'page_obj': page_obj},
+                                  request=request),
+        'search_query': search_query if search_query else "", 'page_obj': page_obj}
     
     return render(request, 'index.html', context=context)
 

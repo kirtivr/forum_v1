@@ -1,9 +1,9 @@
 {% load static %}
-  {% if posts %}
+  {% if page_obj %}
     <div>
       <!-- Main content -->
       <div class="container-fluid">
-        {% for post in posts %}
+        {% for post in page_obj %}
         <!-- End of post 1 -->
         <div class="row pos-relative py-3 px-3 mb-3 rounded-1" style="border-style: solid; border-color: brown">
         <!--  <div class="align-items-center"> -->
@@ -26,7 +26,7 @@
             </div>
             <div class="col col-md-4">
               <div class="text-center">
-                <div class="col"> <i class="fa-solid fa-reply"></i> <span class="text-sm">{{post.num_replies}} Replies</span> </div>
+                <div class="col"> <i class="fa-solid fa-reply"></i> <span class="text-sm">{{post.reply_to_post.count}} Replies</span> </div>
               </div>
             </div>
         <!-- </div> -->

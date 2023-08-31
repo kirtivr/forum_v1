@@ -25,7 +25,7 @@
               </ul>
               <div id="search_block" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" class="form-control">
                 <!-- <div class="form-outline"> -->
-                  <input id="search_bar" type="search" placeholder="Search..." aria-label="Search" minlength="3">
+                <input id="search_bar" type="search" placeholder="Search..." aria-label="Search" minlength="3" value="{{search_query}}">
                 <!-- </div> -->
                 <button type="button" class="btn btn-primary" id="do_search_btn">
                   <i class="fas fa-search"></i>
@@ -42,7 +42,7 @@
               <div class="dropdown">
                 <button style="background-size: cover !important; background: url('{% static 'assets/img/cat.jpg' %}')"
                   type="button" class="btn btn-secondary dropdown-toggle"
-                  id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  id="dropdownMenuButton" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                   <a href="{% url 'logout' %}" class="dropdown-item">Logout</a>

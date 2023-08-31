@@ -11,15 +11,13 @@
     <link href="{% static 'assets/grid.css' %}" rel="stylesheet">
     <div class="container-fluid">
       {% if user.is_authenticated %}
-        <div class="row row-cols-md-4 mb-4 text-center">
+        <div class="row row-cols-md-3 mb-3 text-center">
           <button class="filter col themed-grid-col" id="latest_activity">Latest Activity</button>
           <button class="filter col themed-grid-col" id="new_posts">New Posts</button>
-          <button class="filter col themed-grid-col" id="best">Best</button>
           <button class="filter col themed-grid-col" id="unanswered">Unanswered</button>
         </div>
         {{ posts }}
         {% block pagination %}
-          {% if is_paginated %}
             <div class="pagination">
               <span class="page-links">
                 {% if page_obj.has_previous %}
@@ -37,15 +35,10 @@
                 {% endif %}
               </span>
             </div>
-          {% endif %}
         {% endblock %}
       </div>
   <footer class="footer mt-auto py-3">
-    <div class="container">
-      <span class="col themed-grid-col">
-        <a href="{% url 'new' %}">New Post </a>
-      </span>
-    </div>
+        <a href="{% url 'new' %}" style="color: white" class="btn btn-success">New Post </a>
   </footer>
 
   {% elif request.path_info != '/accounts/login/' %}
