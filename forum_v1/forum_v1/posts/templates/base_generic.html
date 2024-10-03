@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="{% static 'styles.css' %}">
 </head>
 <body>
-  <div class="container-fluid text-center">
+  <div class="container-fluid text-center h-100">
     <div id="header">
       <link href="{% static 'headers/headers.css' %}" rel="stylesheet">
       <main>
@@ -55,15 +55,13 @@
       
       </main>
     </div>
-    <div class="row">
-      <div class="col-sm-2">
-        <div style="background-color: black; width: 100%; height: 100%"></div>
+    <div class="row h-100">
+      <div class="col-sm-2 h-100" style="background-color: black;">
       </div>
       {% block content %}
         <!-- default content text (typically empty) -->
       {% endblock %}
-      <div class="col-sm-2">
-        <div style="background-color: black; width: 100%; height: 100%"></div>
+      <div class="col-sm-2 h-100" style="background-color: black;">
       </div>  
   </div>
 </body>

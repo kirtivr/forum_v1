@@ -7,9 +7,9 @@
   $("#search_block").css("display", "block")
 </script>
 {% block content %}
-<div class="col-sm-8">
+<div class="col-sm-8 h-100">
     <link href="{% static 'assets/grid.css' %}" rel="stylesheet">
-    <div class="container-fluid">
+    <div class="container-fluid h-100">
       {% if user.is_authenticated %}
         <div class="row row-cols-md-3 mb-3 text-center">
           <button class="filter col themed-grid-col" id="latest_activity">Latest Activity</button>
