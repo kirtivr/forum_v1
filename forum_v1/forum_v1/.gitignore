@@ -1,0 +1,13 @@
+scripts/
+*.log
+*~
+
+# Django
+migrations/
+static/collected/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+.project
