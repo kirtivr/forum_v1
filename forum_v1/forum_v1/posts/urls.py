@@ -6,7 +6,10 @@ urlpatterns = [
     path('', views.index, name='posts'),
     path('new', views.new_post_view, name='new'),
     path('post-detail/<uuid:post_id>/', views.post_detail, name='post-detail'),
-    path('post-detail/<uuid:post_id>/<str:file_name>', views.download_attachment, name='download_attachment'),
-    path('author-detail/<int:author_id>/', views.author_detail.as_view(), name='author-detail'),
-    re_path('^(?P<filter_by>[\w-]+)', views.filter_posts, name='filter_posts_by'),
+    path('post-detail/<uuid:post_id>/<str:file_name>',
+         views.download_attachment, name='download_attachment'),
+    path('author-detail/<int:author_id>/',
+         views.author_detail.as_view(), name='author-detail'),
+    re_path(r'^(?P<filter_by>[\w-]+)',
+            views.filter_posts, name='filter_posts_by'),
 ]

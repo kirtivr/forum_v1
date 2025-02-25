@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import sentry_sdk
+import os
 from pathlib import Path
 from typing import List
 
@@ -54,7 +56,6 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'forum_v1.urls'
 
-import os
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -126,7 +127,7 @@ USE_TZ = True
 STATIC_URL = '/posts/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "posts", "static", "collected")
 STATICFILES_DIRS = [
-   os.path.join(BASE_DIR, "posts", "static"),
+    os.path.join(BASE_DIR, "posts", "static"),
 ]
 
 # Default primary key field type
@@ -141,8 +142,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
-    'formatters':{
-        'hc' : {
+    'formatters': {
+        'hc': {
             'format': '%(asctime)s %(levelname)s %(name)s\n%(message)s'
         },
 
@@ -152,7 +153,7 @@ LOGGING = {
             'class': 'logging.FileHandler',
             'filename': 'general.log',
             'level': 'DEBUG',
-            'encoding' : 'utf-8',
+            'encoding': 'utf-8',
         },
     },
     'loggers': {
@@ -161,3 +162,20 @@ LOGGING = {
         }
     }
 }
+
+# Sentry
+sentry_sdk.init(
+    dsn="https://bc222f52c4094752921778d6446ccd64@o4508878979661824.ingest.de.sentry.io/4508879002009680",
+    # Add data like request headers and IP for users,
+    # see https://docs.sentry.io/platforms/python/data-management/data-collected/ for more info
+    send_default_pii=False,
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for tracing.
+    traces_sample_rate=1.0,
+    _experiments={
+        # Set continuous_profiling_auto_start to True
+        # to automatically start the profiler on when
+        # possible.
+        "continuous_profiling_auto_start": True,
+    },
+)
