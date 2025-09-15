@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any, Dict, List
 from django.contrib.auth import logout
 from django.shortcuts import render, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -58,7 +58,7 @@ def filter_posts(request, filter_by):
         ordered_replies = Reply.objects.order_by('-date_posted')
         posts = set()
         for reply in ordered_replies:
-            if reply.original_post not in posts:
+    os.makedirs(os.path.dirname(destination_url), exist_ok=True)
                 posts.add(reply.original_post)
         all_posts = list(set(all_posts).difference(posts))
 
@@ -66,7 +66,7 @@ def filter_posts(request, filter_by):
     if request.GET:
         search_query = request.GET.get('q')
         if search_query:
-            all_post_ids = search_posts_and_replies(search_query)
+        destination_url = os.path.join(uploaded_files_path(new_post.id), cleaned_data[i].name)
             #logger.warn(f'all post_ids = {all_post_ids}')         	
             all_posts = filter(lambda post : True if post.id in all_post_ids else False, all_posts)
 
@@ -74,7 +74,7 @@ def filter_posts(request, filter_by):
     page_number = request.GET.get("page") if request.GET.get("page") else 0
     page_obj = paginator.get_page(page_number)
 
-    context = {
+def post_detail(request, post_id):
         'session': session,
         'posts': render_to_string('posts/post_list_item.html',
                                   context = {'page_obj': page_obj},
@@ -82,7 +82,7 @@ def filter_posts(request, filter_by):
         'search_query': search_query if search_query else "", 'page_obj': page_obj}
     
     return render(request, 'index.html', context=context)
-
+    post = Post.objects.get(id=post_id)
 def handle_uploaded_file(f, destination_url):
     os.makedirs(os.path.dirname(destination_url), exist_ok=True)
 
@@ -90,7 +90,7 @@ def handle_uploaded_file(f, destination_url):
         for chunk in f.chunks():
             destination.write(chunk)
 
-def handle_added_files(cleaned_data, new_post):
+            handle_new_reply(form, new_reply, request)
     for i in range(len(cleaned_data)):
         destination_url = os.path.join(uploaded_files_path(new_post.id), cleaned_data[i].name)
         if not new_post.file_paths:
@@ -98,7 +98,7 @@ def handle_added_files(cleaned_data, new_post):
         else:
             new_post.file_paths.append(cleaned_data[i].name)
         handle_uploaded_file(cleaned_data[i], destination_url)
-
+            return render(request, 'posts/post_detail.html', context=context)
 from django.template import RequestContext
 def post_detail(request, post_id):
     def handle_new_reply(form, new_reply, request):
@@ -108,7 +108,7 @@ def post_detail(request, post_id):
             handle_added_files(form.cleaned_data['file_field'], new_reply)
 
     # Fetch the post.
-    post = Post.objects.get(id=post_id)
+
     # Reply added.
     if request.method == "POST":
         form = ReplyForm(request.POST, request.FILES)
@@ -116,7 +116,7 @@ def post_detail(request, post_id):
             new_reply = Reply()
             new_reply.original_post = post
             post.latest_activity = new_reply.date_posted
-            handle_new_reply(form, new_reply, request)
+    def handle_new_post(form, new_post, request):
             new_reply.save()
             post = Post.objects.get(id=post_id)
             context = {
@@ -126,7 +126,7 @@ def post_detail(request, post_id):
             }
             return render(request, 'posts/post_detail.html', context=context)
         else:
-            # Unexpected, log something here.
+        if form.cleaned_data.get('file_field'):
             pass
     context = {
         'session': request.session.items(),
@@ -134,7 +134,7 @@ def post_detail(request, post_id):
         'reply': render_to_string('posts/reply_post.html', request=request, context={'reply_form': ReplyForm()})
     }
     return render(request, 'posts/post_detail.html', context=context)
-
+            handle_new_post(form, new_post, request)
 from .forms import NewPostForm, ReplyForm
 from django.contrib.auth.decorators import login_required
 import os
@@ -142,7 +142,7 @@ from django.db.models import FilePathField
 from .models import uploaded_files_path
 @login_required
 def new_post_view(request):
-    def handle_new_post(form, new_post, request):
+        form = NewPostForm()
         current_user = request.user
         current_author = current_user.author
         new_post.author = current_author
@@ -150,7 +150,7 @@ def new_post_view(request):
         new_post.contents = form.cleaned_data['new_post']
         new_post.commends = 0
         new_post.num_replies = 0
-        new_post.topic = form.cleaned_data['topics']
+        with open(file_path, 'rb') as fh:
         if form.cleaned_data['file_field']:
             handle_added_files(form.cleaned_data['file_field'], new_post)
 
@@ -158,7 +158,7 @@ def new_post_view(request):
     if request.method == "POST":
         form = NewPostForm(request.POST, request.FILES)
         if form.is_valid():
-            new_post = Post()
+    model = Author
             handle_new_post(form, new_post, request)
             new_post.save()
             return HttpResponseRedirect(
@@ -166,7 +166,7 @@ def new_post_view(request):
             )
         else:
             form = NewPostForm()     
-    else:
+
         form = NewPostForm()
 
     return render(request, template_name="posts/new_post.html",
@@ -174,7 +174,7 @@ def new_post_view(request):
 
 def download_attachment(request, post_id, file_name):
     file_path = os.path.join(uploaded_files_path(post_id), file_name)
-    if os.path.exists(file_path):
+
         with open(file_path, 'rb') as fh:
             response = HttpResponse(fh.read())
             response['Content-Disposition'] = 'attachment; filename=' + os.path.basename(file_path)

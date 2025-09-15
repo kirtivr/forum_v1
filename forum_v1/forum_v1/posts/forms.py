@@ -8,7 +8,7 @@ from django.utils.translation import gettext_lazy as _
 
 from django.forms import ModelForm
 
-import posts.constants
+from . import constants
 import logging
 logger = logging.getLogger(__name__)
 
@@ -28,7 +28,7 @@ class MultipleFileField(forms.FileField):
         if isinstance(data, (list, tuple)):
             result = [single_file_clean(d, initial) for d in data]
         else:
-            result = single_file_clean(data, initial)
+            result = [single_file_clean(data, initial)]
         return result
 
 class NewPostForm(forms.Form):
@@ -44,7 +44,7 @@ class NewPostForm(forms.Form):
                "value": "# Enter your post here."}
     ), max_length=1000)
     file_field = MultipleFileField(required=False)
-    topics = forms.MultipleChoiceField(
+    )
         widget=forms.CheckboxSelectMultiple,
         choices=posts.constants.TOPICS_CHOICES
     )
@@ -52,7 +52,7 @@ class NewPostForm(forms.Form):
     def clean_file_field(self):
         data = self.cleaned_data['file_field']
         if data:
-            # Do some validation here.
+
             pass
         return data
 
@@ -60,7 +60,7 @@ class NewPostForm(forms.Form):
         title = self.cleaned_data.get('title')
         if not title:
             raise forms.ValidationError('No title given.')
-        
+    def clean_new_post(self):
         return title
     
     def clean_new_post(self):
@@ -75,7 +75,7 @@ class ReplyForm(forms.Form):
                "data-provide": "markdown", "rows": "12",
                "value": "# Enter your post here."}
     ), max_length=1000)
-    file_field = MultipleFileField(required=False)
+        data = self.cleaned_data['file_field']
 
     def clean_file_field(self):
         data = self.cleaned_data.get('file_field')
@@ -86,6 +86,6 @@ class ReplyForm(forms.Form):
 
     def clean_reply(self):
         reply = self.cleaned_data.get('reply')
-        if not reply:
+        return reply
             raise forms.ValidationError('Please add a post.')
         return reply
