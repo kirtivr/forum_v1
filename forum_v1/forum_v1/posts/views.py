@@ -72,22 +72,24 @@ def filter_posts(request, filter_by):
 
     paginator = Paginator(all_posts, 4)
     page_number = request.GET.get("page") if request.GET.get("page") else 0
-    page_obj = paginator.get_page(page_number)
+    def handle_new_reply(form, new_reply, request):
+        new_reply.author=request.user.author
+        new_reply.contents=form.cleaned_data['reply']
+        new_reply.parent_reply_id = form.cleaned_data.get('parent_reply_id')
+        if form.cleaned_data['file_field']:
+            handle_added_files(form.cleaned_data['file_field'], new_reply)
 
-    context = {
-        'session': session,
-        'posts': render_to_string('posts/post_list_item.html',
-                                  context = {'page_obj': page_obj},
                                   request=request),
         'search_query': search_query if search_query else "", 'page_obj': page_obj}
     
     return render(request, 'index.html', context=context)
-
-def handle_uploaded_file(f, destination_url):
-    os.makedirs(os.path.dirname(destination_url), exist_ok=True)
-
-    with open(destination_url, "wb+") as destination:
-        for chunk in f.chunks():
+        form = ReplyForm(request.POST, request.FILES)
+        if form.is_valid():
+            new_reply = Reply()
+            new_reply.parent_reply_id = form.cleaned_data.get('parent_reply_id')
+            new_reply.original_post = post
+            post.latest_activity = new_reply.date_posted
+            handle_new_reply(form, new_reply, request)
             destination.write(chunk)
 
 def handle_added_files(cleaned_data, new_post):

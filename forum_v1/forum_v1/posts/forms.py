@@ -53,12 +53,13 @@ class NewPostForm(forms.Form):
         data = self.cleaned_data['file_field']
         if data:
             # Do some validation here.
-            pass
-        return data
+               "data-provide": "markdown", "rows": "12",
+               "value": "# Enter your post here."}
+    ), max_length=1000)
+    parent_reply_id = forms.UUIDField(required=False, widget=forms.HiddenInput())
+    file_field = MultipleFileField(required=False)
 
-    def clean_title(self):
-        title = self.cleaned_data.get('title')
-        if not title:
+    def clean_file_field(self):
             raise forms.ValidationError('No title given.')
         
         return title

@@ -62,12 +62,12 @@ class Post(models.Model):
     title = models.CharField(max_length=500)
 
     topic = ArrayField(models.CharField(max_length=200, choices=posts.constants.TOPICS_CHOICES), blank=True)
+    author = models.ForeignKey('Author', on_delete=models.SET_NULL, null=True, related_name="reply_author")
+    original_post = models.ForeignKey('Post', on_delete=models.CASCADE, related_name="reply_to_post")
+    parent_reply = models.ForeignKey('Reply', on_delete=models.CASCADE, null=True, blank=True, related_name="child_replies")
 
-    # Foreign Key used because post can only have one author, but authors can have multiple posts.
-    # Otherwise this would have been a ManyToMany field.
-    author = models.ForeignKey('Author', on_delete=models.SET_NULL, null=True, related_name="author")
-    date_posted = models.DateTimeField(null=True, blank=True, auto_now=True)
-    latest_activity = models.DateTimeField(null=True, blank=True, auto_now=True)
+    class Meta:
+        abstract = True
     contents = models.CharField(max_length=10000, null=True, blank=True)
     file_paths = ArrayField(models.FilePathField(path=uploaded_files_path(id), default=None, null=True, blank=True))
 
