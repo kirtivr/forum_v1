@@ -1,16 +1,31 @@
 $(".filter").click(
     function() {
         var id = $(this).attr('id');
-        current_location = window.location.pathname
-        path_strs = current_location.split("/").filter(n => n)
-        if (path_strs[path_strs.length - 1] == "posts") {
-            path_strs.push(id)
+        if (id.startsWith('topic_')) {
+            var topicName = id.substring(6); // remove 'topic_' prefix
+            var current_location = window.location.pathname;
+            var path_strs = current_location.split("/").filter(n => n);
+            if (path_strs[path_strs.length - 1] == "posts") {
+                path_strs.push("topic");
+            } else {
+                path_strs.pop();
+                path_strs.push("topic");
+            }
+            var new_path = "/" + path_strs.join("/");
+            var new_url = add_parameter(new_path, 'topic', topicName);
+            window.location.href = new_url;
         } else {
-            path_strs.pop()
-            path_strs.push(id)
+            current_location = window.location.pathname;
+            path_strs = current_location.split("/").filter(n => n);
+            if (path_strs[path_strs.length - 1] == "posts") {
+                path_strs.push(id);
+            } else {
+                path_strs.pop();
+                path_strs.push(id);
+            }
+            new_location = path_strs.join("/");
+            window.location.pathname = "/" + new_location;
         }
-        new_location = path_strs.join("/")
-        window.location.pathname = "/" + new_location
     }
 );
 
