@@ -1,6 +1,9 @@
-from datetime import date
-from django.contrib.auth.models import User
+   contents = models.CharField(max_length=10000, null=True, blank=True)
+   file_paths = ArrayField(models.FilePathField(path=uploaded_files_path(id), default=None, null=True, blank=True))
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
 from django.contrib.postgres.fields import ArrayField
+
+   #def get_absolute_url(self):
 from django.db import models
 from django.urls import reverse
 from django.db.models.signals import post_save

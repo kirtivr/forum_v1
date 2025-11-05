@@ -1,19 +1,27 @@
 from django.contrib import admin
+@admin.register(Post)
 
-# Register your models here.
+class PostAdmin(admin.ModelAdmin):
+   list_display = (
+   'title', 'author', 'topic', 'contents'
+   )
 
-from .models import Author, Post
 
-class AuthorInstanceInline(admin.TabularInline):
+   inlines = [RepliesInline]
     model = Author
-    extra = 0
 
-class PostsInline(admin.TabularInline):
-    model = Post
-    extra = 0
+@admin.register(Reply)
+class ReplyAdmin(admin.ModelAdmin):
+    list_display = ('__str__', 'original_post', 'parent', 'date_posted')
 
-# Define the admin class
 @admin.register(Author)
+
+class AuthorAdmin(admin.ModelAdmin):
+# Register the Admin classes for Post using the decorator
+    list_display = ['designation']
+@admin.register(Post)
+    extra = 0
+
 class AuthorAdmin(admin.ModelAdmin):
     list_display = ['designation']
 
